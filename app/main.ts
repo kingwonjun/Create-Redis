@@ -8,66 +8,133 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
     // Handle connection
     connection.on("data", (data: Buffer) => {
         console.log("data", JSON.stringify(data.toString()));
-        const arr: string[][] = [];
 
-        // 먼저 '*', '$'가 앞에오면 그 다음 숫자를 읽는다.
-        // 그다음 \r\n은 건너뛴다. 여기서 파싱을 해야될 것 같다.
-        // arr.push([]) 로 배열을 만들고 (2차원 배열)
-        // arr[0].push()에다가 값을 넣는다.
-        // 이 때 arr[] 안에 인덱스는 따로 변수를 생성하여 *다음의 숫자까지? 이거는 조금 헷갈리는게
-        // '*' 다음의 숫자가 오면 그 숫자는 어떻게 사용해야 될지 모르겠다.
-        // 시작 문자는 무조건 있어야한다. '+', '-', ':', '$', '*'
-        //---
-        // 오류메시지 고려해야한다.
-        // 시작 문자가 없을 경우
-        // $와 *에 두자리이상의 숫자가 나오는 거 고려하고
-        // 숫자나 문자가 끝날 때 \r\n이 있는지 고려하고
-        let isError: boolean = false;
-        for (let i = 0; i < data.length; i++) {
-            // 구조를 어떻게 짜야 되는지 고민이 된다.
-            // 일단 처음에 시작문자가 나오는지 확인 / 안나오면 오류메시지 출력
-            // 시작문자라면 앞에 숫자와 문자가 나오고 \r\n이 나올때까지 data[i]의 인덱스 i를 증가시키다가
-            // 나올때 다시 break로 빠져나와야 될듯
+        if ()
 
-            if (data[i] == '*'.charCodeAt(0)) {
-                i++;
-                let num: number = 0;
-                // 1의 자리수보다 더 많은 자리수를 읽을려면 /r/n 가 올때까지 숫자인지만 확인하면 된다.
-                // 1의 자리수 이상일 경우 10 * data[i].charCodeAt(0) + data[i + 1] 이렇게 하는게 나을 것 같다.
-                // 그 값을 저장할 변수를 어디다가 놔둬야 되는지 고민이 됨
-                // '*' 다음에 숫자가 안나올때도 고려 해야 함
-                if (data[i] === '0'.charCodeAt(0)) {
-                    isError = true;
-                }
-                //숫자가 몇자리인지 구하는 코드
-                while (!isError && data[i] >= '0'.charCodeAt(0) && data[i] <= '9'.charCodeAt(0)) {
-                    num = num * 10 + data[i] - '0'.charCodeAt(0);
-                    i++;
-                }
-                // *다음에 숫자를 읽고 그 숫자는 앞으로 나올 문자열의 개수를 의미한다.
-                // \r\n 기준으로 문자열의 개수를 의미한다.
-                // \r\n을 파싱하면서 건너뛰는방법을 구한다.
-                // * 이 문자 다음으로 시작되는 숫자만큼 배열에 넣어서 나중에 꺼내 출력한다.
-                if (data[i] === 13 && data[i + 1] === 10) {
-                    i += 2;
-                }
-                else {
-                    isError = true;
-                }
-            } else if (data[i] == '$'.charCodeAt(0)) {
-
-            } else {
-
-            }
-        }
         parseData(data);
         connection.write('+PONG\r\n');
     })
 });
+
 //파서를 만든다.
 const parseData = (data: Buffer) => {
-    // data를 분석한다.
-    // data를 한글자씩 읽는다.
-    // data를
+
+    // 재귀적 자료구조를 사용, 그 타입을 다시 배열에 선언
+    type RespValue = string | RespValue[];
+    const arr: RespValue[] = [];
+
+    /*
+     * RESP 파싱 전체 흐름
+     *
+     * 1. RESP 값은 반드시 시작 문자(+, -, :, $, *) 중 하나로 시작해야 한다.
+     *    시작 문자가 없으면 오류 처리한다.
+     *
+     * 2. '*' 또는 '$' 뒤에는 숫자가 온다.
+     *    - 숫자는 한 자리 이상일 수 있으므로 \r\n 전까지 연속해서 읽어야 한다.
+     *    - 숫자 다음에는 반드시 \r\n이 와야 한다.
+     *
+     * 3. '*' 뒤의 숫자는 앞으로 나올 RESP 값의 개수를 의미한다.
+     *    - *0도 정상적인 값이므로 고려해야 한다.
+     *    - TODO: 이 숫자를 이용해서 arr에 값을 어떻게 나눠 담을지 결정해야 한다.
+     *
+     * 4. '$' 뒤의 숫자는 뒤에 나올 문자열의 길이를 의미한다.
+     *
+     * 5. arr.push([])로 내부 배열을 만든 뒤
+     *    arr[index].push(...) 형태로 파싱한 값을 저장할 예정.
+     *    - TODO: arr의 index를 어떤 기준으로 증가시킬지 결정해야 한다.
+     *
+     * 오류 처리
+     * - 올바른 시작 문자가 없는 경우
+     * - '*' 또는 '$' 뒤에 숫자가 없는 경우
+     * - 숫자가 여러 자리인 경우도 정상적으로 읽어야 함
+     * - 필요한 위치에 \r\n이 없는 경우
+     */
+
+    let isError: boolean = false;
+
+    for (let i = 0; i < data.length; i++) {
+
+        if (data[i] == '*'.charCodeAt(0)) {
+            i++;
+            let num: number = 0;
+
+            /*
+             * Array(*)
+             *
+             * '*' 다음의 숫자를 읽는다.
+             * 숫자는 여러 자리일 수 있으므로 숫자가 계속되는 동안 반복한다.
+             *
+             * 예:
+             * *2\r\n  -> num = 2
+             * *12\r\n -> num = 12
+             *
+             * '*' 바로 다음에 숫자가 없으면 오류 처리한다.
+             * *0 역시 정상적인 RESP Array이므로 허용해야 한다.
+             */
+
+            if (data[i] < '0'.charCodeAt(0) || data[i] > '9'.charCodeAt(0)) {
+                isError = true;
+            }
+
+            // 여러 자리 숫자를 하나의 정수로 변환한다.
+            while (data[i] >= '0'.charCodeAt(0) && data[i] <= '9'.charCodeAt(0)) {
+                num = num * 10 + data[i] - '0'.charCodeAt(0);
+                i++;
+            }
+
+            /*
+             * 숫자를 모두 읽은 뒤에는 반드시 \r\n이 와야 한다.
+             * 정상이라면 \r\n을 건너뛰고 다음 RESP 값을 읽는다.
+             */
+            if (data[i] === 13 && data[i + 1] === 10) {
+                i += 2;
+            } else {
+                isError = true;
+            }
+
+            /*
+             * TODO:
+             * num만큼 뒤의 RESP 값을 읽어서 배열에 저장하는 로직 구현
+             */
+
+            /**
+             * 고민:  앞에 * 의 값이 나왔는데도 읽는 도중 *가 또나오면 배열이 중첩된다.
+             * ['a', ['a', 'b']]
+             * 이렇게
+             * 배열은 어떤 방식으로 중첩시킬 수 있을까?
+             * 위에 배열은 arr[0][0] = 'a' 이고
+             * arr[0][1]이 = ['a', 'b'] 배열이다. 맞나? 이거.... 타입이 안맞는데?
+             *
+             * --> type RespValue = string | RespValue[]; 으로 재귀적 자료구조 썻다.
+             * 재귀적 자료구조란 자기와 같은 종류를 자기 안에 또 넣을 수 있는 자료구조
+             *
+             * 이 자료구조를 사용해서 배열을 중첩시시킨다.
+             * TODO: RespValue를 이용하여 '*' 나오는 부분의 로직을 완성시킨다.
+             */
+
+            /**
+             * 고민 : *3\r\n 이렇게 나오면 다시 시작 문자가 나온다.
+             * 그 시작 문자로 다시 일일이 적어서 분기를 내야되는데
+             * 현재로썬 재귀와 함수로 만들어서 쓸 생각밖에 안나는 것 같다.
+             * 그리고 중첩 *가 나와버리면 일단 배열을 다시 선언한뒤
+             * 재귀를 쓰면서 값을 넣고 재귀에서 다시 올라와서 arr.push(배열) 로 한꺼번에 넣어야 될것 같다.
+             */
+
+        } else if (data[i] == '$'.charCodeAt(0)) {
+
+            // TODO: Bulk String 파싱
+
+        } else if (data[i] == ':'.charCodeAt(0)) {
+
+            // TODO: Integer 파싱할때 부호 +, - 고려해야한다.
+
+        } else if (data[i] == '-'.charCodeAt(0) ||
+            data[i] == '+'.charCodeAt(0)) {
+
+            // TODO: 올바른 RESP 시작 문자가 아닌 경우 오류 처리
+        } else {
+
+        }
+    }
 }
 server.listen(6379, "127.0.0.1");
