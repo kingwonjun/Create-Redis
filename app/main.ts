@@ -29,7 +29,7 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
         let idx: number = 0;
         const result = parseData(data, idx);
         if (result === null) {
-            console.log("정상적인 값이 아닙니다.")
+            connection.write(Buffer.from(""));
         } else if (typeof result.value === "string") {
             connection.write(Buffer.from(result.value));
         }
