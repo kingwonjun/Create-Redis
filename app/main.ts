@@ -126,6 +126,7 @@ const parseData = (
                 idx++;
             }
         }
+        console.log("체크");
         if (idx < data.length) {
             word += "\r\n";
         }
