@@ -27,7 +27,7 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
         const testData: Buffer = Buffer.from("+hello\r\n");
 
         let idx: number = 0;
-        const result = parseData(data, idx);
+        const result = parseData(testData, idx);
         if (result === null) {
             connection.write(Buffer.from(""));
         } else if (typeof result.value === "string") {
