@@ -21,6 +21,26 @@ const recur_array = (
     }
 }
 
+const start_star = {}
+
+const start_plus = (
+    data: Buffer,
+    idx: number,
+): ParseResult | null => {
+    let word: string = "";
+    while (!(data[idx] === '\r'.charCodeAt(0) && data[idx + 1] === '\n'.charCodeAt(0))) {
+        if (data.length == idx) {
+            return null;
+        }
+        word += String.fromCharCode(data[idx]);
+        idx++;
+    }
+    return {
+        value: word,
+        nextIdx: idx + 2,
+    };
+}
+
 const server: net.Server = net.createServer((connection: net.Socket) => {
     connection.on("data", (data: Buffer) => {
 
@@ -31,10 +51,13 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
         if (result === null) {
             connection.write(Buffer.from(""));
         } else if (typeof result.value === "string") {
-            connection.write(Buffer.from(result.value));
+            recur_array(result.value, connection);
         } else if (Array.isArray(result.value)) {
             recur_array(result.value, connection);
         }
+
+        // *2로 센다음 다시 *표시가 나올때 각각의 배열이 2개이상 나올수 있다.
+        // 세는 도중에는 $가 나왔을경우 \r\n이 지나고 $값만큼 세고 \r\n 이걸 하나로 봐야된다.
     });
 });
 
@@ -43,99 +66,31 @@ const parseData = (
     idx: number,
 ): ParseResult | null => {
 
-    const arr: RespValue[] = [];
-    let word: string = "";
-    while (idx < data.length) {
-        if (data[idx] == '*'.charCodeAt(0)) {
+    let result : ParseResult | null = null;
+    switch (data[idx]) {
+        case "*".charCodeAt(0):
             idx++;
-            let num: number = 0;
-            if (data[idx] < '0'.charCodeAt(0) ||
-                data[idx] > '9'.charCodeAt(0)) {
-                return null;
-            }
-            while (data[idx] >= '0'.charCodeAt(0) &&
-            data[idx] <= '9'.charCodeAt(0)) {
-                num = num * 10 + data[idx] - '0'.charCodeAt(0);
-                idx++;
-            }
-            if (data[idx] === 13 && data[idx + 1] === 10) {
-                idx += 2;
-            } else {
-                return null;
-            }
-            if (data[idx] === '*'.charCodeAt(0)) {
-                parseData(data, idx)
-            }
-            arr.push()
-        } else if (data[idx] == '$'.charCodeAt(0)) {
-
+            break;
+        case "$".charCodeAt(0):
             idx++;
-            let num: number = 0;
-
-            while (data[idx] >= '0'.charCodeAt(0) &&
-            data[idx] <= '9'.charCodeAt(0)) {
-                num = num * 10 + data[idx] - '0'.charCodeAt(0);
-                idx++;
-            }
-
-            if (data[idx] === '\r'.charCodeAt(0) && data[idx + 1] === '\n'.charCodeAt(0)) {
-                idx += 2;
-            } else {
-                return null;
-            }
-
-            while (num > 0) {
-                word += String.fromCharCode(data[idx]);
-                idx++;
-                num--;
-            }
-
-            if (data[idx] === '\r'.charCodeAt(0) && data[idx + 1] === '\n'.charCodeAt(0)) {
-                idx += 2;
-            } else {
-                return null;
-            }
-            arr.push(word);
-        } else if (data[idx] == ':'.charCodeAt(0)) {
-
-            if (data[idx + 1] !== '+'.charCodeAt(0) && data[idx + 1] !== '-'.charCodeAt(0)) {
-                idx++;
-            } else if (data[idx + 1] == '-'.charCodeAt(0)) {
-                word += '-';
-                idx += 2;
-            } else if (data[idx + 1] == '+'.charCodeAt(0)) {
-                idx += 2;
-            }
-
-            while (data[idx] !== 13) {
-                if (data[idx] >= '0'.charCodeAt(0) && data[idx] <= '9'.charCodeAt(0)) {
-                    word += String.fromCharCode(data[idx]);
-                } else {
-                    return null;
-                }
-                idx++;
-            }
-
-            if (data[idx] === 10) {
-
-            }
-        } else if (data[idx] == '+'.charCodeAt(0)) {
+            break;
+        case "+".charCodeAt(0):
             idx++;
-            while (data[idx] !== '\r'.charCodeAt(0) && data[idx + 1] !== '\n'.charCodeAt(0)) {
-                word += String.fromCharCode(data[idx]);
-                idx++;
-            }
-        }
-        console.log("체크");
-        if (idx < data.length) {
-            word += "\r\n";
-        }
+            result = start_plus(data, idx)
+            break;
+        case "-".charCodeAt(0):
+            idx++;
+            break;
+        case ":".charCodeAt(0):
+            idx++;
+            break;
+        default:
+            break;
     }
-    // while에서 정상적으로 빠져나왔다면 resp 파싱규칙을 잘 지킨 문자라는 뜻이다. 안그러면 다 while문안에 return null로 갔을 테니까
-    return {
-        value: word,
-        nextIdx: idx
-    };
+    if (result !== null) {
+        return result;
+    }
+    return null;
 }
 
 server.listen(6379, "127.0.0.1");
