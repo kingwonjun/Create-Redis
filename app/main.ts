@@ -97,6 +97,8 @@ const parseData = (
             } else {
                 return null;
             }
+
+            console.log('작동되나요?');
         } else if (data[idx] == ':'.charCodeAt(0)) {
 
             let word: string = "";
