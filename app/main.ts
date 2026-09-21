@@ -128,6 +128,7 @@ const parseData = (
 
             }
         } else if (data[idx] == '+'.charCodeAt(0)) {
+            idx++;
             let word: string = "";
             while (data[idx] !== '\r'.charCodeAt(0) && data[idx + 1] !== '\n'.charCodeAt(0)) {
                 word += String.fromCharCode(data[idx]);
