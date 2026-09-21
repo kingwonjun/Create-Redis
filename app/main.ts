@@ -24,7 +24,7 @@ const recur_array = (
 const server: net.Server = net.createServer((connection: net.Socket) => {
     connection.on("data", (data: Buffer) => {
 
-        const testData: Buffer = Buffer.from("+abc\r\n+abc\r\n");
+        const testData: Buffer = Buffer.from("+abc\r\n");
 
         let idx: number = 0;
         const result = parseData(testData, idx);
