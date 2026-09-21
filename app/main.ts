@@ -76,7 +76,6 @@ const parseData = (
             arr.push()
         } else if (data[idx] == '$'.charCodeAt(0)) {
 
-            console.log('작동되나요?');
             idx++;
             let num: number = 0;
             let word: string = "";
@@ -92,7 +91,7 @@ const parseData = (
                 idx++;
                 num--;
             }
-
+            console.log('작동되나요?');
             if (data[idx] === '\r'.charCodeAt(0) && data[idx + 1] === '\n'.charCodeAt(0)) {
                 idx += 2;
             } else {
