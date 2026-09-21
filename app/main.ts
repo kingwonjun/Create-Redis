@@ -24,7 +24,7 @@ const recur_array = (
 const server: net.Server = net.createServer((connection: net.Socket) => {
     connection.on("data", (data: Buffer) => {
 
-        const testData: Buffer = Buffer.from("+hello\r\n");
+        const testData: Buffer = Buffer.from("$6\r\n123456\r\n");
 
         let idx: number = 0;
         const result = parseData(testData, idx);
@@ -76,6 +76,7 @@ const parseData = (
             arr.push()
         } else if (data[idx] == '$'.charCodeAt(0)) {
 
+            idx++;
             let num: number = 0;
             let word: string = "";
 
@@ -85,22 +86,16 @@ const parseData = (
                 idx++;
             }
 
-            if (data[idx] === 13 && data[idx + 1] === 10) {
-                idx += 2;
-            } else {
-                return null;
-            }
-            if (data[idx] == '*'.charCodeAt(0) ||
-                data[idx] == ':'.charCodeAt(0) ||
-                data[idx] == '$'.charCodeAt(0) ||
-                data[idx] == '-'.charCodeAt(0) ||
-                data[idx] == '+'.charCodeAt(0)) {
-                return null;
-            }
             while (num > 0) {
                 word += String.fromCharCode(data[idx]);
                 idx++;
                 num--;
+            }
+
+            if (data[idx] === '\r'.charCodeAt(0) && data[idx + 1] === '\n'.charCodeAt(0)) {
+                idx += 2;
+            } else {
+                return null;
             }
         } else if (data[idx] == ':'.charCodeAt(0)) {
 
