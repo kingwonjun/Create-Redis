@@ -91,10 +91,11 @@ const parseData = (
                 idx++;
                 num--;
             }
-            console.log('작동되나요?');
+
             if (data[idx] === '\r'.charCodeAt(0) && data[idx + 1] === '\n'.charCodeAt(0)) {
                 idx += 2;
             } else {
+                console.log('작동되나요?');
                 return null;
             }
 
