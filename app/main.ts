@@ -24,7 +24,7 @@ const recur_array = (
 const server: net.Server = net.createServer((connection: net.Socket) => {
     connection.on("data", (data: Buffer) => {
 
-        const testData: Buffer = Buffer.from("$6\r\n123456\r\n");
+        const testData: Buffer = Buffer.from("+abc\r\n+abc\r\n");
 
         let idx: number = 0;
         const result = parseData(testData, idx);
@@ -32,17 +32,9 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
             connection.write(Buffer.from(""));
         } else if (typeof result.value === "string") {
             connection.write(Buffer.from(result.value));
+        } else if (Array.isArray(result.value)) {
+            recur_array(result.value, connection);
         }
-        // } else if (Array.isArray(result.value)) {
-        //     for (let i = 0; i < result.value.length; i++) {
-        //         if (typeof result.value[i] === "string") {
-        //             connection.write(Buffer.from(result.value[i]));
-        //         } else if (Array.isArray(result.value[i])) {
-        //             connection.write(Buffer.from(result.value[i]));
-        //         }
-        //         connection.write(Buffer.from("\r\n"));
-        //     }
-        // }
     });
 });
 
@@ -52,6 +44,7 @@ const parseData = (
 ): ParseResult | null => {
 
     const arr: RespValue[] = [];
+    let word: string = "";
     while (idx < data.length) {
         if (data[idx] == '*'.charCodeAt(0)) {
             idx++;
@@ -78,7 +71,6 @@ const parseData = (
 
             idx++;
             let num: number = 0;
-            let word: string = "";
 
             while (data[idx] >= '0'.charCodeAt(0) &&
             data[idx] <= '9'.charCodeAt(0)) {
@@ -101,13 +93,10 @@ const parseData = (
             if (data[idx] === '\r'.charCodeAt(0) && data[idx + 1] === '\n'.charCodeAt(0)) {
                 idx += 2;
             } else {
-                console.log('작동되나요?');
                 return null;
             }
-
+            arr.push(word);
         } else if (data[idx] == ':'.charCodeAt(0)) {
-
-            let word: string = "";
 
             if (data[idx + 1] !== '+'.charCodeAt(0) && data[idx + 1] !== '-'.charCodeAt(0)) {
                 idx++;
@@ -132,19 +121,20 @@ const parseData = (
             }
         } else if (data[idx] == '+'.charCodeAt(0)) {
             idx++;
-            let word: string = "";
             while (data[idx] !== '\r'.charCodeAt(0) && data[idx + 1] !== '\n'.charCodeAt(0)) {
                 word += String.fromCharCode(data[idx]);
                 idx++;
             }
-            return {
-                value: word,
-                nextIdx: idx
-            };
         }
-        idx++;
+        if (idx < data.length) {
+            word += "\r\n";
+        }
     }
-    return null;
+    // while에서 정상적으로 빠져나왔다면 resp 파싱규칙을 잘 지킨 문자라는 뜻이다. 안그러면 다 while문안에 return null로 갔을 테니까
+    return {
+        value: word,
+        nextIdx: idx
+    };
 }
 
 server.listen(6379, "127.0.0.1");
