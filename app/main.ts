@@ -86,6 +86,12 @@ const parseData = (
                 idx++;
             }
 
+            if (data[idx] === '\r'.charCodeAt(0) && data[idx + 1] === '\n'.charCodeAt(0)) {
+                idx += 2;
+            } else {
+                return null;
+            }
+
             while (num > 0) {
                 word += String.fromCharCode(data[idx]);
                 idx++;
