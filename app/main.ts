@@ -236,7 +236,7 @@ const parseData = (
         default:
             break;
     }
-    console.log("result " + result + "\n");
+    console.log("result",  result + "\n");
 
     if (result !== null && result.nextIdx !== idx) {
         return parseData(data, result.nextIdx);
