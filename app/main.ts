@@ -170,6 +170,8 @@ const start_dollar = (
         idx++;
     }
 
+    idx += 2;
+
     let num = Number(word);
     while (num > 0 && !(data[idx] === '\r'.charCodeAt(0) && data[idx + 1] === '\n'.charCodeAt(0))) {
         if (data.length == idx) {
