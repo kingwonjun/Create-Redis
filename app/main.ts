@@ -192,7 +192,7 @@ const start_dollar = (
 
 const server: net.Server = net.createServer((connection: net.Socket) => {
     connection.on("data", (data: Buffer) => {
-        const testData: Buffer = Buffer.from("+abc\r\n");
+        const testData: Buffer = Buffer.from("-DDD\r\n");
         let idx: number = 0;
         const result = parseData(testData, idx);
 
@@ -214,18 +214,22 @@ const parseData = (
     let result: ParseResult | null = null;
     switch (data[idx]) {
         case "*".charCodeAt(0):
+            idx++;
 
             break;
         case "$".charCodeAt(0):
             result = start_dollar(data, idx);
             break;
         case "+".charCodeAt(0):
+            idx++;
             result = start_plus(data, idx);
             break;
         case "-".charCodeAt(0):
+            idx++;
             result = start_error(data, idx);
             break;
         case ":".charCodeAt(0):
+            idx++;
             result = start_integer(data, idx);
             break;
         default:
