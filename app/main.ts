@@ -174,7 +174,7 @@ const start_dollar = (
     let num = Number(word);
     console.log(word);
     word = "";
-    while (num > 0 && !(data[idx] === '\r'.charCodeAt(0) && data[idx + 1] === '\n'.charCodeAt(0))) {
+    while (num > 0){
         if (data.length == idx) {
             return null;
         }
@@ -182,20 +182,21 @@ const start_dollar = (
         idx++;
         num--;
     }
-
-    // 문자열을 숫자로 바꾼다. Number 함수 사용
-    return {
-        value: {
-            type: "BulkString",
-            value: word,
-        },
-        nextIdx: idx + 2,
-    };
+    if (data[idx] === '\r'.charCodeAt(0) && data[idx + 1] === '\n'.charCodeAt(0)) {
+        return {
+            value: {
+                type: "BulkString",
+                value: word,
+            },
+            nextIdx: idx + 2,
+        };
+    }
+    return null;
 }
 
 const server: net.Server = net.createServer((connection: net.Socket) => {
     connection.on("data", (data: Buffer) => {
-        const testData: Buffer = Buffer.from("$4\r\n12\r\n\r\n");
+        const testData: Buffer = Buffer.from("$4\r\n1234\r\n");
         let idx: number = 0;
         const result = parseData(testData, idx);
 
