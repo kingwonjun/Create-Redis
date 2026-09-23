@@ -214,23 +214,18 @@ const parseData = (
     let result: ParseResult | null = null;
     switch (data[idx]) {
         case "*".charCodeAt(0):
-            idx++;
 
             break;
         case "$".charCodeAt(0):
-            idx++;
             result = start_dollar(data, idx);
             break;
         case "+".charCodeAt(0):
-            idx++;
             result = start_plus(data, idx);
             break;
         case "-".charCodeAt(0):
-            idx++;
             result = start_error(data, idx);
             break;
         case ":".charCodeAt(0):
-            idx++;
             result = start_integer(data, idx);
             break;
         default:
