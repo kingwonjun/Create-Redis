@@ -196,7 +196,7 @@ const start_dollar = (
 
 const server: net.Server = net.createServer((connection: net.Socket) => {
     connection.on("data", (data: Buffer) => {
-        const testData: Buffer = Buffer.from("$4\r\n1234\r\n");
+        const testData: Buffer = Buffer.from("$4\r\n12\r\n\r\n");
         let idx: number = 0;
         const result = parseData(testData, idx);
 
