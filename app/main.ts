@@ -162,6 +162,7 @@ const start_dollar = (
     idx: number,
 ): ParseResult | null => {
     let word: string = "";
+    idx++;
     while (!(data[idx] === '\r'.charCodeAt(0) && data[idx + 1] === '\n'.charCodeAt(0))) {
         if (data.length == idx) {
             return null;
