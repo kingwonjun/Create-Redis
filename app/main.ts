@@ -43,7 +43,7 @@ const recur_array = (
         value.type === "BulkString") {
         connection.write(Buffer.from(value.value));
         return;
-    } else if (value.type === "Integer" ) {
+    } else if (value.type === "Integer") {
         connection.write(Buffer.from(value.value.toString()));
         return;
     }
@@ -105,7 +105,7 @@ const start_plus = (
     };
 }
 
-const start_error  = (
+const start_error = (
     data: Buffer,
     idx: number,
 ): ParseResult | null => {
@@ -119,19 +119,42 @@ const start_error  = (
     }
     return {
         value: {
-            type: "SimpleString",
+            type: "Error",
             value: word,
         },
         nextIdx: idx + 2,
     };
 }
 
-const start_star  = (
+const start_star = (
     data: Buffer,
     idx: number,
 ): ParseResult | null => {
     let word: string = "";
-
+    let arr: RespValue[] = [];
+    while (!(data[idx] === '\r'.charCodeAt(0) && data[idx + 1] === '\n'.charCodeAt(0))) {
+        if (data.length == idx) {
+            return null;
+        }
+        word += String.fromCharCode(data[idx]);
+        idx++;
+    }
+    let num = Number(word);
+    while (!(data[idx] === '\r'.charCodeAt(0) && data[idx + 1] === '\n'.charCodeAt(0))) {
+        if (data.length == idx) {
+            return null;
+        }
+        word += String.fromCharCode(data[idx]);
+        idx++;
+        num--;
+    }
+    return {
+        value: {
+            type: "Array",
+            value: arr,
+        },
+        nextIdx: idx + 2,
+    };
 }
 
 const start_dollar = (
@@ -145,11 +168,12 @@ const start_dollar = (
         }
         word += String.fromCharCode(data[idx]);
         idx++;
-        }
-        let num = Number(word);
-        while (num > 0 && !(data[idx] === '\r'.charCodeAt(0) && data[idx + 1] === '\n'.charCodeAt(0))) {
-            if (data.length == idx) {
-                return null;
+    }
+
+    let num = Number(word);
+    while (num > 0 && !(data[idx] === '\r'.charCodeAt(0) && data[idx + 1] === '\n'.charCodeAt(0))) {
+        if (data.length == idx) {
+            return null;
         }
         word += String.fromCharCode(data[idx]);
         idx++;
@@ -168,11 +192,10 @@ const start_dollar = (
 
 const server: net.Server = net.createServer((connection: net.Socket) => {
     connection.on("data", (data: Buffer) => {
-
         const testData: Buffer = Buffer.from("+abc\r\n");
-
         let idx: number = 0;
         const result = parseData(testData, idx);
+
         if (result === null) {
             connection.write(Buffer.from(""));
         } else if (typeof result.value === "string") {
@@ -180,9 +203,6 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
         } else if (Array.isArray(result.value)) {
             recur_array(result.value, connection);
         }
-
-        // *2로 센다음 다시 *표시가 나올때 각각의 배열이 2개이상 나올수 있다.
-        // 세는 도중에는 $가 나왔을경우 \r\n이 지나고 $값만큼 세고 \r\n 이걸 하나로 봐야된다.
     });
 });
 
@@ -191,7 +211,7 @@ const parseData = (
     idx: number,
 ): ParseResult | null => {
 
-    let result : ParseResult | null = null;
+    let result: ParseResult | null = null;
     switch (data[idx]) {
         case "*".charCodeAt(0):
             idx++;
@@ -216,6 +236,8 @@ const parseData = (
         default:
             break;
     }
+    console.log("result " + result + "\n");
+
     if (result !== null && result.nextIdx !== idx) {
         return parseData(data, result.nextIdx);
     }
