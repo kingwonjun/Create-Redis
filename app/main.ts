@@ -140,6 +140,7 @@ const start_star = (data: Buffer, idx: number): ParseResult | null => {
                 result = start_star(data, idx);
                 break;
             case "-":
+                idx++;
                 result = start_error(data, idx);
                 break;
             case "+":
