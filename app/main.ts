@@ -131,7 +131,7 @@ const start_star = (data: Buffer, idx: number): ParseResult | null => {
         word += String.fromCharCode(data[idx]);
         idx++;
     }
-    console.log("작동되나요?");
+
     idx += 2;
     let num = Number(word);
     let result: ParseResult | null = null;
@@ -142,14 +142,17 @@ const start_star = (data: Buffer, idx: number): ParseResult | null => {
                 break;
             case "-":
                 idx++;
+                console.log("3");
                 result = start_error(data, idx);
                 break;
             case "+":
                 idx++;
+                console.log("1");
                 result = start_plus(data, idx);
                 break;
             case ":":
                 idx++;
+                console.log("2");
                 result = start_integer(data, idx);
                 break;
             case "$":
