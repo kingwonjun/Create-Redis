@@ -144,6 +144,7 @@ const start_star = (data: Buffer, idx: number): ParseResult | null => {
                 result = start_error(data, idx);
                 break;
             case "+":
+                console.log(`작동하나요`);
                 result = start_plus(data, idx);
                 break;
             case ":":
