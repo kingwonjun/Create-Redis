@@ -164,7 +164,7 @@ const start_star = (
                 result = start_error(data, idx + 2);
                 break;
             case '+':
-                idx++;
+                console.log(`data = ${data}, idx = ${idx}`);
                 result = start_plus(data, idx + 2);
                 break;
             case ':':
@@ -272,7 +272,7 @@ const parseData = (
         default:
             break;
     }
-    console.log(JSON.stringify(result, null, 2));
+    //console.log(JSON.stringify(result, null, 2));
 
     if (result !== null && result.nextIdx !== idx) {
         return parseData(data, result.nextIdx);
