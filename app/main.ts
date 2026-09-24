@@ -65,7 +65,7 @@ const start_integer = (data: Buffer, idx: number): ParseResult | null => {
     } else if (data[idx] >= "0".charCodeAt(0) && data[idx] <= "9".charCodeAt(0)) {
         word += String.fromCharCode(data[idx]);
         idx++;
-    }
+    }a
 
     while (!(data[idx] === "\r".charCodeAt(0) && data[idx + 1] === "\n".charCodeAt(0))) {
         if (data.length === idx) {
@@ -135,7 +135,6 @@ const start_star = (data: Buffer, idx: number): ParseResult | null => {
     let num = Number(word);
     let result: ParseResult | null = null;
     while (num > 0) {
-        console.log(`word : ${word} , idx ; ${idx}`);
         switch (String.fromCharCode(data[idx])) {
             case "*":
                 result = start_star(data, idx);
@@ -144,7 +143,6 @@ const start_star = (data: Buffer, idx: number): ParseResult | null => {
                 result = start_error(data, idx);
                 break;
             case "+":
-                console.log(`작동하나요`);
                 result = start_plus(data, idx);
                 break;
             case ":":
@@ -165,6 +163,7 @@ const start_star = (data: Buffer, idx: number): ParseResult | null => {
     if (result === null) {
         return null;
     }
+    console.log(`${result}`);
     return {
         value: {
             type: "Array",
