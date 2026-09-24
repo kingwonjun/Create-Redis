@@ -147,6 +147,7 @@ const start_star = (data: Buffer, idx: number): ParseResult | null => {
                 result = start_plus(data, idx);
                 break;
             case ":":
+                idx++;
                 result = start_integer(data, idx);
                 break;
             case "$":
@@ -212,7 +213,7 @@ const start_dollar = (data: Buffer, idx: number): ParseResult | null => {
 
 const server: net.Server = net.createServer((connection: net.Socket) => {
     connection.on("data", (data: Buffer) => {
-        const testData: Buffer = Buffer.from("*3\r\n+123\r\n+123\r\n+123\r\n");
+        const testData: Buffer = Buffer.from("*3\r\n+123\r\n:-123\r\n-123\r\n");
         let idx: number = 0;
         const result = parseData(testData, idx);
 
