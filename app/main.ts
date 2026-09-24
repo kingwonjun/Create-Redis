@@ -176,7 +176,6 @@ const start_star = (
                 break;
         }
         if (result === null) {
-            console.log(`여기냐?`);
             return null;
         } else {
             arr.push(result.value);
@@ -185,6 +184,7 @@ const start_star = (
         num--;
     }
     if (result === null) {
+        console.log(`여기에요?`);
         return null;
     }
     // num-- 를 넣는 게 과연 옳은가
