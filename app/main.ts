@@ -138,8 +138,7 @@ const start_star = (data: Buffer, idx: number): ParseResult | null => {
     let result: ParseResult | null = null;
     word = "";
     while (num > 0) {
-        while (
-            !(data[idx] === "\r".charCodeAt(0) && data[idx + 1] === "\n".charCodeAt(0))) {
+        while (!(data[idx] === "\r".charCodeAt(0) && data[idx + 1] === "\n".charCodeAt(0))) {
             if (data.length == idx) {
                 return null;
             }
@@ -224,7 +223,7 @@ const start_dollar = (data: Buffer, idx: number): ParseResult | null => {
 
 const server: net.Server = net.createServer((connection: net.Socket) => {
     connection.on("data", (data: Buffer) => {
-        const testData: Buffer = Buffer.from("*3\r\n+123\r\n+123\r\n+123\r\n");
+        const testData: Buffer = Buffer.from("*3\r\n+123\r\n");
         let idx: number = 0;
         const result = parseData(testData, idx);
 
