@@ -163,7 +163,7 @@ const start_star = (data: Buffer, idx: number): ParseResult | null => {
     if (result === null) {
         return null;
     }
-    console.log(`${result}`);
+    console.log(JSON.stringify(result, null, 2));
     return {
         value: {
             type: "Array",
