@@ -134,32 +134,23 @@ const start_star = (data: Buffer, idx: number): ParseResult | null => {
     idx += 2;
     let num = Number(word);
     let result: ParseResult | null = null;
-    word = "";
     while (num > 0) {
-        while (!(data[idx] === "\r".charCodeAt(0) && data[idx + 1] === "\n".charCodeAt(0))) {
-            if (data.length === idx) {
-                return null;
-            }
-            word += String.fromCharCode(data[idx]);
-            idx++;
-        }
         console.log(`word : ${word} , idx ; ${idx}`);
-
-        switch (word[0]) {
+        switch (data[idx].toString()) {
             case "*":
-                result = start_star(data, idx + 2);
+                result = start_star(data, idx);
                 break;
             case "-":
-                result = start_error(data, idx + 2);
+                result = start_error(data, idx);
                 break;
             case "+":
-                result = start_plus(data, idx + 2);
+                result = start_plus(data, idx);
                 break;
             case ":":
-                result = start_integer(data, idx + 2);
+                result = start_integer(data, idx);
                 break;
             case "$":
-                result = start_dollar(data, idx + 2);
+                result = start_dollar(data, idx);
                 break;
         }
         if (result === null) {
