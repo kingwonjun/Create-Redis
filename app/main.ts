@@ -271,7 +271,7 @@ const parseData = (
         default:
             break;
     }
-    console.log(JSON.stringify(result));
+    console.log(JSON.stringify(result, null, 2));
 
     if (result !== null && result.nextIdx !== idx) {
         return parseData(data, result.nextIdx);
