@@ -138,7 +138,6 @@ const start_star = (data: Buffer, idx: number): ParseResult | null => {
     while (num > 0) {
         switch (String.fromCharCode(data[idx])) {
             case "*":
-                idx++;
                 console.log(`idx = ${idx}`);
                 result = start_star(data, idx);
                 break;
