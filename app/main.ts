@@ -60,7 +60,6 @@ const start_integer = (data: Buffer, idx: number): ParseResult | null => {
     if (data[idx] === "-".charCodeAt(0)) {
         word += "-";
         idx++;
-        console.log("작동되나요?")
     } else if (data[idx] === "+".charCodeAt(0)) {
         idx++;
     } else if (data[idx] >= "0".charCodeAt(0) && data[idx] <= "9".charCodeAt(0)) {
@@ -139,23 +138,21 @@ const start_star = (data: Buffer, idx: number): ParseResult | null => {
     while (num > 0) {
         switch (String.fromCharCode(data[idx])) {
             case "*":
+                idx++;
+                console.log(`data[idx] = ${data[idx]}`);
                 result = start_star(data, idx);
                 break;
             case "-":
                 idx++;
-                console.log("3");
                 result = start_error(data, idx);
                 break;
             case "+":
                 idx++;
-                console.log("1");
                 result = start_plus(data, idx);
                 break;
             case ":":
                 idx++;
-                console.log(`idx: ${idx}`);
                 result = start_integer(data, idx);
-                console.log("2");
                 break;
             case "$":
                 result = start_dollar(data, idx);
@@ -220,7 +217,7 @@ const start_dollar = (data: Buffer, idx: number): ParseResult | null => {
 
 const server: net.Server = net.createServer((connection: net.Socket) => {
     connection.on("data", (data: Buffer) => {
-        const testData: Buffer = Buffer.from("*3\r\n+123\r\n:-123\r\n-123\r\n");
+        const testData: Buffer = Buffer.from("*2\r\n*2\r\n+123\r\n+123\r\n:-123\r\n");
         let idx: number = 0;
         const result = parseData(testData, idx);
 
