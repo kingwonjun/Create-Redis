@@ -152,8 +152,9 @@ const start_star = (data: Buffer, idx: number): ParseResult | null => {
                 break;
             case ":":
                 idx++;
-                console.log("2");
+
                 result = start_integer(data, idx);
+                console.log("2");
                 break;
             case "$":
                 result = start_dollar(data, idx);
