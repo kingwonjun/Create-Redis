@@ -176,6 +176,7 @@ const start_star = (
                 break;
         }
         if (result === null) {
+            console.log(`여기냐?`);
             return null;
         } else {
             arr.push(result.value);
