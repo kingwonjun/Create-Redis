@@ -177,6 +177,7 @@ const start_star = (
         }
         console.log(JSON.stringify(result, null, 2));
         if (result === null) {
+            console.log(`1`);
             return null;
         } else {
             arr.push(result.value);
@@ -185,6 +186,7 @@ const start_star = (
         num--;
     }
     if (result === null) {
+        console.log(`2`);
         return null;
     }
     // num-- 를 넣는 게 과연 옳은가
