@@ -175,6 +175,7 @@ const start_star = (
                 result = start_dollar(data, idx + 2);
                 break;
         }
+        console.log(JSON.stringify(result, null, 2));
         if (result === null) {
             return null;
         } else {
