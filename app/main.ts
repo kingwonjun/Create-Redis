@@ -67,9 +67,8 @@ const start_integer = (data: Buffer, idx: number): ParseResult | null => {
         idx++;
     }
 
-    while (
-        !(data[idx] === "\r".charCodeAt(0) && data[idx + 1] === "\n".charCodeAt(0))) {
-        if (data.length == idx) {
+    while (!(data[idx] === "\r".charCodeAt(0) && data[idx + 1] === "\n".charCodeAt(0))) {
+        if (data.length === idx) {
             return null;
         }
         word += String.fromCharCode(data[idx]);
@@ -132,19 +131,19 @@ const start_star = (data: Buffer, idx: number): ParseResult | null => {
         word += String.fromCharCode(data[idx]);
         idx++;
     }
-    console.log(`word: ${word}`);
     idx += 2;
     let num = Number(word);
     let result: ParseResult | null = null;
     word = "";
     while (num > 0) {
         while (!(data[idx] === "\r".charCodeAt(0) && data[idx + 1] === "\n".charCodeAt(0))) {
-            if (data.length == idx) {
+            if (data.length === idx) {
                 return null;
             }
             word += String.fromCharCode(data[idx]);
             idx++;
         }
+        console.log(`word : ${word} , idx ; ${idx}`);
 
         switch (word[0]) {
             case "*":
@@ -163,7 +162,6 @@ const start_star = (data: Buffer, idx: number): ParseResult | null => {
                 result = start_dollar(data, idx + 2);
                 break;
         }
-        console.log(JSON.stringify(result, null, 2));
         if (result === null) {
             return null;
         } else {
@@ -175,7 +173,6 @@ const start_star = (data: Buffer, idx: number): ParseResult | null => {
     if (result === null) {
         return null;
     }
-    // num-- 를 넣는 게 과연 옳은가
     return {
         value: {
             type: "Array",
@@ -189,7 +186,7 @@ const start_dollar = (data: Buffer, idx: number): ParseResult | null => {
     let word: string = "";
     idx++;
     while (!(data[idx] === "\r".charCodeAt(0) && data[idx + 1] === "\n".charCodeAt(0))) {
-        if (data.length == idx) {
+        if (data.length === idx) {
             return null;
         }
         word += String.fromCharCode(data[idx]);
@@ -223,7 +220,7 @@ const start_dollar = (data: Buffer, idx: number): ParseResult | null => {
 
 const server: net.Server = net.createServer((connection: net.Socket) => {
     connection.on("data", (data: Buffer) => {
-        const testData: Buffer = Buffer.from("*3\r\n+123\r\n");
+        const testData: Buffer = Buffer.from("*3\r\n+123\r\n+123\r\n+123\r\n");
         let idx: number = 0;
         const result = parseData(testData, idx);
 
@@ -262,8 +259,6 @@ const parseData = (data: Buffer, idx: number): ParseResult | null => {
         default:
             break;
     }
-    console.log("왜 작동안하는거에요?");
-    console.log(JSON.stringify(result, null, 2));
 
     if (result !== null && result.nextIdx !== idx) {
         return parseData(data, result.nextIdx);
