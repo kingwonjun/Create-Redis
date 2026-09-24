@@ -136,7 +136,7 @@ const start_star = (data: Buffer, idx: number): ParseResult | null => {
     let result: ParseResult | null = null;
     while (num > 0) {
         console.log(`word : ${word} , idx ; ${idx}`);
-        switch (data[idx].toString()) {
+        switch (String.fromCharCode(data[idx])) {
             case "*":
                 result = start_star(data, idx);
                 break;
