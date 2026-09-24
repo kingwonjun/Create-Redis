@@ -180,6 +180,7 @@ const start_star = (
         } else {
             arr.push(result.value);
         }
+        idx = result.nextIdx;
         num--;
     }
     if (result === null) {
