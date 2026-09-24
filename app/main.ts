@@ -60,12 +60,13 @@ const start_integer = (data: Buffer, idx: number): ParseResult | null => {
     if (data[idx] === "-".charCodeAt(0)) {
         word += "-";
         idx++;
+        console.log("작동되나요?")
     } else if (data[idx] === "+".charCodeAt(0)) {
         idx++;
     } else if (data[idx] >= "0".charCodeAt(0) && data[idx] <= "9".charCodeAt(0)) {
         word += String.fromCharCode(data[idx]);
         idx++;
-    }a
+    }
 
     while (!(data[idx] === "\r".charCodeAt(0) && data[idx + 1] === "\n".charCodeAt(0))) {
         if (data.length === idx) {
