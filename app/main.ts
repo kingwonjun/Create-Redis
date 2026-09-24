@@ -184,7 +184,6 @@ const start_star = (
         num--;
     }
     if (result === null) {
-        console.log(`여기에요?`);
         return null;
     }
     // num-- 를 넣는 게 과연 옳은가
@@ -278,6 +277,7 @@ const parseData = (
         default:
             break;
     }
+    console.log("왜 작동안하는거에요?");
     console.log(JSON.stringify(result, null, 2));
 
     if (result !== null && result.nextIdx !== idx) {
