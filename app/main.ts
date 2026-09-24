@@ -139,15 +139,47 @@ const start_star = (
         word += String.fromCharCode(data[idx]);
         idx++;
     }
+    idx += 2;
     let num = Number(word);
-    while (!(data[idx] === '\r'.charCodeAt(0) && data[idx + 1] === '\n'.charCodeAt(0))) {
-        if (data.length == idx) {
-            return null;
+    word = "";
+    while (num > 0) {
+        while (!(data[idx] === '\r'.charCodeAt(0) && data[idx + 1] === '\n'.charCodeAt(0))) {
+            if (data.length == idx) {
+                return null;
+            }
+            word += String.fromCharCode(data[idx]);
+            idx++;
         }
-        word += String.fromCharCode(data[idx]);
-        idx++;
+        // word가 string 이 아닐 수도 있음.
+        // 다시 *가 나타난다면 중첩배열을 써야되고 이때는 start_star를 호출하여야 한다.
+
+        // *12345\r\n
+        let result : ParseResult | null = null;
+        switch(word[0]) {
+            case '*':
+                result = start_star(data, idx + 2);
+                break;
+            case '-':
+                result = start_error(data, idx + 2);
+                break;
+            case '+':
+                result = start_plus(data, idx + 2);
+                break;
+            case ':':
+                result = start_integer(data, idx + 2);
+                break;
+            case '$':
+                result = start_dollar(data, idx + 2);
+                break;
+        }
+        if (result === null) {
+            return null;
+        } else {
+            arr.push(result.value);
+        }
         num--;
     }
+    // num-- 를 넣는 게 과연 옳은가
     return {
         value: {
             type: "Array",
@@ -172,9 +204,8 @@ const start_dollar = (
     }
     idx += 2;
     let num = Number(word);
-    console.log(word);
     word = "";
-    while (num > 0){
+    while (num > 0) {
         if (data.length == idx) {
             return null;
         }
@@ -196,7 +227,7 @@ const start_dollar = (
 
 const server: net.Server = net.createServer((connection: net.Socket) => {
     connection.on("data", (data: Buffer) => {
-        const testData: Buffer = Buffer.from("$4\r\n12\r\n\r\n");
+        const testData: Buffer = Buffer.from("*1\r\n+1\r\n");
         let idx: number = 0;
         const result = parseData(testData, idx);
 
@@ -219,7 +250,7 @@ const parseData = (
     switch (data[idx]) {
         case "*".charCodeAt(0):
             idx++;
-
+            result = start_star(data, idx);
             break;
         case "$".charCodeAt(0):
             result = start_dollar(data, idx);
@@ -244,6 +275,9 @@ const parseData = (
     if (result !== null && result.nextIdx !== idx) {
         return parseData(data, result.nextIdx);
     }
+    // parseData를 여기 쓸것인지 아니면 start_star에 하나 추가할 것인지
+    // 여기에 쓰는 걸 첫번재로 고려해보자...
+
     if (result !== null) {
         return result;
     }
