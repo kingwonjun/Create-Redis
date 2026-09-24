@@ -138,6 +138,7 @@ const start_star = (data: Buffer, idx: number): ParseResult | null => {
     while (num > 0) {
         switch (String.fromCharCode(data[idx])) {
             case "*":
+                idx++;
                 console.log(`idx = ${idx}`);
                 result = start_star(data, idx);
                 break;
@@ -168,7 +169,7 @@ const start_star = (data: Buffer, idx: number): ParseResult | null => {
     if (result === null) {
         return null;
     }
-    console.log(JSON.stringify(arr, null, 2));
+
     return {
         value: {
             type: "Array",
@@ -255,7 +256,7 @@ const parseData = (data: Buffer, idx: number): ParseResult | null => {
         default:
             break;
     }
-
+    console.log(JSON.stringify(result?.value, null, 2));
     if (result !== null && result.nextIdx !== idx) {
         return parseData(data, result.nextIdx);
     }
