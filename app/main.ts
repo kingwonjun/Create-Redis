@@ -142,6 +142,7 @@ const start_star = (
     console.log(`word: ${word}`);
     idx += 2;
     let num = Number(word);
+    let result : ParseResult | null = null;
     word = "";
     while (num > 0) {
         while (!(data[idx] === '\r'.charCodeAt(0) && data[idx + 1] === '\n'.charCodeAt(0))) {
@@ -155,7 +156,7 @@ const start_star = (
         // 다시 *가 나타난다면 중첩배열을 써야되고 이때는 start_star를 호출하여야 한다.
 
         // *12345\r\n
-        let result : ParseResult | null = null;
+
         switch(word[0]) {
             case '*':
                 result = start_star(data, idx + 2);
@@ -181,13 +182,16 @@ const start_star = (
         }
         num--;
     }
+    if (result === null) {
+        return null;
+    }
     // num-- 를 넣는 게 과연 옳은가
     return {
         value: {
             type: "Array",
             value: arr,
         },
-        nextIdx: idx + 2,
+        nextIdx: result.nextIdx + 2,
     };
 }
 
