@@ -152,7 +152,7 @@ const start_star = (data: Buffer, idx: number): ParseResult | null => {
                 break;
             case ":":
                 idx++;
-
+                console.log(`idx: ${idx}`);
                 result = start_integer(data, idx);
                 console.log("2");
                 break;
