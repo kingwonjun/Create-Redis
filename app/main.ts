@@ -91,6 +91,7 @@ const start_plus = (
     let word: string = "";
     while (!(data[idx] === '\r'.charCodeAt(0) && data[idx + 1] === '\n'.charCodeAt(0))) {
         if (data.length == idx) {
+            console.log("너냐");
             return null;
         }
         word += String.fromCharCode(data[idx]);
