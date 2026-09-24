@@ -164,6 +164,7 @@ const start_star = (
                 result = start_error(data, idx + 2);
                 break;
             case '+':
+                idx++;
                 result = start_plus(data, idx + 2);
                 break;
             case ':':
