@@ -164,10 +164,7 @@ const start_star = (data: Buffer, idx: number): ParseResult | null => {
         } else {
             arr.push(result.value);
         }
-        console.log(`전에 idx = ${idx}`);
         idx = result.nextIdx;
-        console.log(`후에 idx = ${idx}`);
-        // console.log(JSON.stringify(result?.value, null, 2));
         num--;
     }
     if (result === null) {
@@ -221,16 +218,21 @@ const start_dollar = (data: Buffer, idx: number): ParseResult | null => {
 
 const server: net.Server = net.createServer((connection: net.Socket) => {
     connection.on("data", (data: Buffer) => {
-        const testData: Buffer = Buffer.from("*3\r\n:+123\r\n$5\r\n1\r234\r\n-dddd\r\n");
+        // const testData: Buffer = Buffer.from("*3\r\n:+123\r\n$5\r\n1\r234\r\n-dddd\r\n");
         let idx: number = 0;
-        const result = parseData(testData, idx)
+        const result = parseData(data, idx)
 
         if (result === null) {
             connection.write(Buffer.from(""));
-        } else if (typeof result.value === "string") {
+        } else if (result.value.type === "SimpleString" ||
+            result.value.type === "Error" ||
+            result.value.type === "BulkString" ||
+            result.value.type === "Array" ||
+            result.value.type === "Integer"
+        ) {
             recur_array(result.value, connection);
-        } else if (Array.isArray(result.value)) {
-            recur_array(result.value, connection);
+        } else  {
+            connection.write(Buffer.from("error"));
         }
     });
 });
@@ -258,7 +260,7 @@ const parseData = (data: Buffer, idx: number): ParseResult | null => {
             result = start_integer(data, idx);
             break;
         default:
-            break;``
+            break;
     }
     console.log(JSON.stringify(result?.value, null, 3));
 
