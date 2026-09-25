@@ -68,7 +68,7 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
             return;
         }
         if (result.value.type === "Array") {
-            console.log(result.value.type);
+            console.log(result.value.value);
             handleCommand(result, connection);
         }
     });
