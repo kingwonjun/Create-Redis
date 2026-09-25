@@ -158,6 +158,7 @@ const start_star = (data: Buffer, idx: number): ParseResult | null => {
                 break;
         }
         if (result === null) {
+            console.log(`null?`);
             return null;
         } else {
             arr.push(result.value);
