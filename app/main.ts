@@ -139,6 +139,7 @@ const start_star = (data: Buffer, idx: number): ParseResult | null => {
         switch (String.fromCharCode(data[idx])) {
             case "*":
                 idx++;
+                num--;
                 result = start_star(data, idx);
                 break;
             case "-":
@@ -158,7 +159,6 @@ const start_star = (data: Buffer, idx: number): ParseResult | null => {
                 break;
         }
         if (result === null) {
-            console.log(`null?`);
             return null;
         } else {
             arr.push(result.value);
@@ -166,7 +166,7 @@ const start_star = (data: Buffer, idx: number): ParseResult | null => {
         console.log(`전에 idx = ${idx}`);
         idx = result.nextIdx;
         console.log(`후에 idx = ${idx}`);
-        console.log(JSON.stringify(result?.value, null, 2));
+        // console.log(JSON.stringify(result?.value, null, 2));
         num--;
     }
     if (result === null) {
@@ -259,7 +259,7 @@ const parseData = (data: Buffer, idx: number): ParseResult | null => {
         default:
             break;
     }
-    // console.log(JSON.stringify(result?.value, null, 2));
+    console.log(JSON.stringify(result?.value, null, 2));
 
     if (result !== null) {
         return result;
