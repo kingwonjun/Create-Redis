@@ -179,7 +179,7 @@ const start_star = (data: Buffer, idx: number): ParseResult | null => {
             type: "Array",
             value: arr,
         },
-        nextIdx: result.nextIdx + 2,
+        nextIdx: result.nextIdx,
     };
 };
 
