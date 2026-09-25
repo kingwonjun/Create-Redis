@@ -51,6 +51,7 @@ const recur_array = (value: RespValue, connection: net.Socket): void => {
         return;
     }
     for (let i = 0; i < value.value.length; i++) {
+        console.log(`value : ${value.value[i]} `);
         if (value.value[i].toString().toLowerCase() === "echo") {
             continue;
         }
