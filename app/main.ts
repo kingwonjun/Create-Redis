@@ -33,30 +33,47 @@ type RespValue =
     | RespError
     | RespBulkString
     | RespArray;
+
 type ParseResult = {
     value: RespValue;
     nextIdx: number;
 };
 
-const recur_array = (value: RespValue, connection: net.Socket): void => {
-    if (
-        value.type === "SimpleString" ||
-        value.type === "Error" ||
-        value.type === "BulkString"
-    ) {
-        connection.write(Buffer.from(value.value));
-        return;
-    } else if (value.type === "Integer") {
-        connection.write(Buffer.from(value.value.toString()));
-        return;
+const encodeResp = (value: RespValue): string => {
+
+    let word: string = "";
+
+    if (value.type === "BulkString") {
+        word += "$";
+        word += value.value.length.toString();
+        word += "\r\n";
+        word += value.value;
+        word += "\r\n";
     }
-    for (let i = 0; i < value.value.length; i++) {
-        if (value.value[i].value.toString().toLowerCase() === "echo") {
-            continue;
+
+    return word;
+}
+
+const handleCommand = (result: ParseResult, connection: net.Socket) : void => {
+
+
+
+}
+
+const server: net.Server = net.createServer((connection: net.Socket) => {
+    connection.on("data", (data: Buffer) => {
+        // const testData: Buffer = Buffer.from("*3\r\n:+123\r\n$5\r\n1\r234\r\n-dddd\r\n");
+        let idx: number = 0;
+        const result = parseData(data, idx)
+        if (result === null) {
+            return;
         }
-        recur_array(value.value[i], connection);
-    }
-};
+        if (result.value.type === "Array") {
+            console.dir(result, { depth: null });
+            handleCommand(result, connection);
+        }
+    });
+});
 
 const start_integer = (data: Buffer, idx: number): ParseResult | null => {
     let word: string = "";
@@ -219,26 +236,7 @@ const start_dollar = (data: Buffer, idx: number): ParseResult | null => {
     return null;
 };
 
-const server: net.Server = net.createServer((connection: net.Socket) => {
-    connection.on("data", (data: Buffer) => {
-        // const testData: Buffer = Buffer.from("*3\r\n:+123\r\n$5\r\n1\r234\r\n-dddd\r\n");
-        let idx: number = 0;
-        const result = parseData(data, idx)
 
-        if (result === null) {
-            connection.write(Buffer.from(""));
-        } else if (result.value.type === "SimpleString" ||
-            result.value.type === "Error" ||
-            result.value.type === "BulkString" ||
-            result.value.type === "Array" ||
-            result.value.type === "Integer"
-        ) {
-            recur_array(result.value, connection);
-        } else  {
-            connection.write(Buffer.from("error"));
-        }
-    });
-});
 
 const parseData = (data: Buffer, idx: number): ParseResult | null => {
     let result: ParseResult | null = null;
