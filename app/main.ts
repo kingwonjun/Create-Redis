@@ -152,6 +152,7 @@ const start_star = (data: Buffer, idx: number): ParseResult | null => {
                 break;
             case ":":
                 idx++;
+                console.log("여기작동되긴하나요?");
                 result = start_integer(data, idx);
                 break;
             case "$":
@@ -257,7 +258,7 @@ const parseData = (data: Buffer, idx: number): ParseResult | null => {
             result = start_integer(data, idx);
             break;
         default:
-            break;
+            break;``
     }
     console.log(JSON.stringify(result?.value, null, 2));
 
