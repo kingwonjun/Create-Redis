@@ -221,7 +221,7 @@ const start_dollar = (data: Buffer, idx: number): ParseResult | null => {
 
 const server: net.Server = net.createServer((connection: net.Socket) => {
     connection.on("data", (data: Buffer) => {
-        const testData: Buffer = Buffer.from("$5\r\n:daf12\r\n");
+        const testData: Buffer = Buffer.from("$5\r\n:daf1\r\n");
         let idx: number = 0;
         const result = parseData(testData, idx)
 
