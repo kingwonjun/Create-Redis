@@ -139,7 +139,7 @@ const start_star = (data: Buffer, idx: number): ParseResult | null => {
         switch (String.fromCharCode(data[idx])) {
             case "*":
                 idx++;
-                num--;
+                // num--;
                 result = start_star(data, idx);
                 break;
             case "-":
