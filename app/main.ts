@@ -57,7 +57,6 @@ const encodeResp = (value: RespValue): string => {
 const handleCommand = (result: ParseResult, connection: net.Socket) : void => {
 
 
-
 }
 
 const server: net.Server = net.createServer((connection: net.Socket) => {
@@ -69,7 +68,7 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
             return;
         }
         if (result.value.type === "Array") {
-            console.dir(result, { depth: null });
+            console.log(result.value.type);
             handleCommand(result, connection);
         }
     });
