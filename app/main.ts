@@ -42,6 +42,7 @@ type ParseResult = {
 const encodeResp = (value: RespValue): string => {
 
     let word: string = "";
+    console.log(`value.value = ${value.value}`);
     if (value.value === "PING") {
         word += "$";
         word += value.value.length.toString();
