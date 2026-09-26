@@ -78,8 +78,9 @@ const handleCommand = (result: ParseResult, connection: net.Socket, store: Map<s
             const value = getString(result.value.value[2]);
             if (key !== null && value !== null) {
                 store.set(key, value);
+                connection.write(Buffer.from("OK"));
             }
-        }
+        } 
     }
 }
 
