@@ -57,7 +57,7 @@ const encodeResp = (value: RespValue): string => {
         word += value.value;
         word += "\r\n";
     }
-
+    console.log(word);
     return word;
 }
 
