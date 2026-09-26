@@ -39,28 +39,36 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
 
     if (result.value.type === "Array" && result.value.value[0].type === "BulkString") {
         const [command, ...args] = result.value.value;
-        if (command.value.toLowerCase() === "ping") {
-            connection.write(encodeResp(command.value));
-        } else if (command.value.toLowerCase() === "echo") {
-            connection.write(encodeResp(args[0]));
-        } else if (command.value.toLowerCase() === "set") {
-            const key = getString(args[0]);
-            const value = getString(args[1]);
+        const commandName = command.value.toLowerCase();
+        switch (commandName) {
+            case "ping":
+                connection.write(encodeResp(command.value));
+                break;
+            case "echo":
+                connection.write(encodeResp(args[0]));
+                break;
+            case "set": {
+                const key = getString(args[0]);
+                const value = getString(args[1]);
 
-            if (key !== null && value !== null) {
-                store.set(key, value);
-                connection.write(Buffer.from("+OK\r\n"));
+                if (key !== null && value !== null) {
+                    store.set(key, value);
+                    connection.write(Buffer.from("+OK\r\n"));
+                }
+                break;
             }
-        } else if (command.value.toLowerCase() === "get") {
-            const key = getString(args[0]);
-            let value : string | undefined;
-            if (key !== null) {
-                value = store.get(key);
-            }
-            if (key !== null && value === undefined) {
-                connection.write(Buffer.from("$-1\r\n"));
-            }  else if (key !== null && typeof value === "string") {
-                connection.write(encodeResp(value));
+            case "get": {
+                const key = getString(args[0]);
+                let value: string | undefined;
+                if (key !== null) {
+                    value = store.get(key);
+                }
+                if (key !== null && value === undefined) {
+                    connection.write(Buffer.from("$-1\r\n"));
+                } else if (key !== null && typeof value === "string") {
+                    connection.write(encodeResp(value));
+                }
+                break;
             }
         }
     }
