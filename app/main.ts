@@ -42,7 +42,7 @@ type ParseResult = {
 const encodeResp = (value: RespValue): string => {
 
     let word: string = "";
-
+    console.log("여기는 접근되나?")
     if (value.value === "PING") {
         word += "$";
         word += value.value.length.toString();
