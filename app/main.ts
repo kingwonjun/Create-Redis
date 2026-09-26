@@ -9,7 +9,7 @@ type RespSimpleString = {
 
 type RespInteger = {
     type: "Integer";
-    value: number;
+    value: string;
 };
 
 type RespError = {
@@ -47,8 +47,7 @@ const encodeResp = (value: RespValue): string => {
         word += "+";
         word += "PONG";
         word += "\r\n";
-    }
-    else if (value.type === "BulkString") {
+    } else if (value.type === "BulkString") {
         word += "$";
         word += value.value.length.toString();
         word += "\r\n";
@@ -59,29 +58,41 @@ const encodeResp = (value: RespValue): string => {
     return word;
 }
 
-const handleCommand = (result: ParseResult, connection: net.Socket) : void => {
+const getString = (value: RespValue): string | null => {
+    if (typeof value.value === "string") {
+        return value.value;
+    }
+    return null;
+}
+
+const handleCommand = (result: ParseResult, connection: net.Socket, store: Map<string, string>): void => {
 
     if (result.value.type === "Array" && result.value.value[0].type === "BulkString") {
         if (result.value.value[0].value.toLowerCase() === "ping") {
             console.log("1");
             connection.write(encodeResp(result.value.value[0]));
-        }
-        else if (result.value.value[0].value.toLowerCase() === "echo") {
+        } else if (result.value.value[0].value.toLowerCase() === "echo") {
             connection.write(encodeResp(result.value.value[1]));
+        } else if (result.value.value[0].value.toLowerCase() === "set") {
+            const key = getString(result.value.value[1]);
+            const value = getString(result.value.value[2]);
+            if (key !== null && value !== null) {
+                store.set(key, value);
+            }
         }
     }
 }
 
 const server: net.Server = net.createServer((connection: net.Socket) => {
     connection.on("data", (data: Buffer) => {
-        // const testData: Buffer = Buffer.from("*3\r\n:+123\r\n$5\r\n1\r234\r\n-dddd\r\n");
-        let idx: number = 0;
-        const result = parseData(data, idx)
+
+        const store = new Map<string, string>;
+        const result = parseData(data, 0)
         if (result === null) {
             return;
         }
         if (result.value.type === "Array") {
-            handleCommand(result, connection);
+            handleCommand(result, connection, store);
         }
     });
 });
@@ -109,7 +120,7 @@ const start_integer = (data: Buffer, idx: number): ParseResult | null => {
     return {
         value: {
             type: "Integer",
-            value: Number(word),
+            value: word,
         },
         nextIdx: idx + 2,
     };
@@ -245,7 +256,6 @@ const start_dollar = (data: Buffer, idx: number): ParseResult | null => {
     }
     return null;
 };
-
 
 
 const parseData = (data: Buffer, idx: number): ParseResult | null => {
