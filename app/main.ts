@@ -107,9 +107,8 @@ const handleCommand = (result: ParseResult, connection: net.Socket, store: Map<s
 }
 
 const server: net.Server = net.createServer((connection: net.Socket) => {
+    const store = new Map<string, string>;
     connection.on("data", (data: Buffer) => {
-
-        const store = new Map<string, string>;
         const result = parseData(data, 0)
         if (result === null) {
             return;
