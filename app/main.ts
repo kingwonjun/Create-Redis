@@ -92,12 +92,12 @@ const handleCommand = (result: ParseResult, connection: net.Socket, store: Map<s
         } else if (result.value.value[0].value.toLowerCase() === "get") {
             const key = getString(result.value.value[1]);
             console.log(`key: ${key}`);
+            console.log(store);
             let value : string | undefined;
             if (key !== null) {
                  value = store.get(key);
             }
             if (key !== null && value === undefined) {
-                console.log("여기가 왜되는거야?")
                 connection.write(Buffer.from("$-1\r\n"));
             }  else if (key !== null && typeof value === "string") {
                 connection.write(encodeResp(value));
