@@ -95,6 +95,7 @@ const handleCommand = (result: ParseResult, connection: net.Socket, store: Map<s
                  value = store.get(key);
             }
             if (key !== null && value === undefined) {
+                console.log("여기가 왜되는거야?")
                 connection.write(Buffer.from("$-1\r\n"));
             }  else if (key !== null && typeof value === "string") {
                 connection.write(encodeResp(value));
