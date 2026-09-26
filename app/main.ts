@@ -43,7 +43,7 @@ const encodeResp = (value: RespValue): string => {
 
     let word: string = "";
 
-    if (value.value === "ping") {
+    if (value.value === "PING") {
         word += "$";
         word += value.value.length.toString();
         word += "\r\n";
@@ -64,8 +64,10 @@ const encodeResp = (value: RespValue): string => {
 const handleCommand = (result: ParseResult, connection: net.Socket) : void => {
 
     if (result.value.type === "Array" && result.value.value[0].type === "BulkString") {
-        if (result.value.value[1].type === "BulkString" && result.value.value[1].value.toLowerCase() === "ping") {
+        if (result.value.value[0].value.toLowerCase() === "ping") {
+            console.log("1");
             connection.write(encodeResp(result.value.value[1]));
+            console.log("2");
         }
         else if (result.value.value[0].value.toLowerCase() === "echo") {
             connection.write(encodeResp(result.value.value[1]));
