@@ -42,14 +42,12 @@ type ParseResult = {
 const encodeResp = (value: RespValue): string => {
 
     let word: string = "";
-    console.log(`value.value = ${value.value}`);
     if (value.value === "PING") {
         word += "$";
         word += value.value.length.toString();
         word += "\r\n";
         word += "PONG";
         word += "\r\n";
-        console.log("여기는 접근되나?")
     }
     else if (value.type === "BulkString") {
         word += "$";
@@ -58,7 +56,6 @@ const encodeResp = (value: RespValue): string => {
         word += value.value;
         word += "\r\n";
     }
-    console.log(word);
     return word;
 }
 
