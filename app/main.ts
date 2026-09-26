@@ -39,20 +39,28 @@ type ParseResult = {
     nextIdx: number;
 };
 
-const encodeResp = (value: RespValue): string => {
+const encodeResp = (value: RespValue | string): string => {
 
     let word: string = "";
 
-    if (value.value === "PING") {
-        word += "+";
-        word += "PONG";
-        word += "\r\n";
-    } else if (value.type === "BulkString") {
+    if (typeof value === "string") {
         word += "$";
-        word += value.value.length.toString();
+        word += value.length.toString();
         word += "\r\n";
-        word += value.value;
+        word += value;
         word += "\r\n";
+    } else {
+        if (value.value === "PING") {
+            word += "+";
+            word += "PONG";
+            word += "\r\n";
+        } else if (value.type === "BulkString") {
+            word += "$";
+            word += value.value.length.toString();
+            word += "\r\n";
+            word += value.value;
+            word += "\r\n";
+        }
     }
 
     return word;
@@ -79,6 +87,17 @@ const handleCommand = (result: ParseResult, connection: net.Socket, store: Map<s
             if (key !== null && value !== null) {
                 store.set(key, value);
                 connection.write(Buffer.from("+OK\r\n"));
+            }
+        } else if (result.value.value[0].value.toLowerCase() === "get") {
+            const key = getString(result.value.value[1]);
+            let value : string | undefined;
+            if (key !== null) {
+                 value = store.get(key);
+            }
+            if (key !== null && value === undefined) {
+                connection.write(Buffer.from("$-1\r\n"));
+            }  else if (key !== null && typeof value === "string") {
+                connection.write(encodeResp(value));
             }
         }
     }
