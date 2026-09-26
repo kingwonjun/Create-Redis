@@ -90,6 +90,7 @@ const handleCommand = (result: ParseResult, connection: net.Socket, store: Map<s
             }
         } else if (result.value.value[0].value.toLowerCase() === "get") {
             const key = getString(result.value.value[1]);
+            console.log(`key: ${key}`);
             let value : string | undefined;
             if (key !== null) {
                  value = store.get(key);
