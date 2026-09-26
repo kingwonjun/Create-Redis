@@ -65,6 +65,7 @@ const handleCommand = (result: ParseResult, connection: net.Socket) : void => {
 
     if (result.value.type === "Array" && result.value.value[0].type === "BulkString") {
         if (result.value.value[0].value.toLowerCase() === "ping") {
+            console.log("여기작됭됮나");
             connection.write(encodeResp(result.value.value[1]));
         }
         else if (result.value.value[0].value.toLowerCase() === "echo") {
