@@ -178,6 +178,7 @@ const start_dollar = (data: Buffer, idx: number): ParseResult | null => {
         idx++;
         num--;
     }
+    idx++;
     if (
         data[idx] === "\r".charCodeAt(0) &&
         data[idx + 1] === "\n".charCodeAt(0)
