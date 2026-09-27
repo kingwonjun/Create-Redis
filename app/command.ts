@@ -61,6 +61,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 const valueString = getString(args[1]);
                 const Px = getString(args[2])?.toLowerCase()
                 const expiresAt = args[3];
+                console.log("여기도 안들어와?")
                 if (key !== null && valueString !== null) {
                     if (expiresAt === null) {
                         store.set (key, {value: valueString, expiresAt : null});
