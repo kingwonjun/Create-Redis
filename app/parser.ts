@@ -29,7 +29,7 @@ export const parseData = (data: Buffer, idx: number): ParseResult | null => {
         default:
             break;
     }
-
+    console.log(result);
     return result;
 };
 
