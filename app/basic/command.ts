@@ -91,7 +91,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 }
                 break;
             }
-            case "RPUSH": {
+            case "rpush": {
                 const key = getString(args[0]);
                 const value = getString(args[1]);
                 if (key !== null && value !== null) {
