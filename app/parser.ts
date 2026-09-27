@@ -190,6 +190,7 @@ const start_dollar = (data: Buffer, idx: number): ParseResult | null => {
             nextIdx: idx + 2,
         };
     }
+    console.log(`idx = ${idx}`);
     console.log("여ㅑ기냐");
     return null;
 };
