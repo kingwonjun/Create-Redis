@@ -61,14 +61,13 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 const valueString = getString(args[1]);
                 const Px = getString(args[2])?.toLowerCase()
                 const expiresAt = args[3];
-                console.log("작동되나요?");
                 if (key !== null && valueString !== null) {
                     if (expiresAt === null) {
                         store.set (key, {value: valueString, expiresAt : null});
                     }
                     else if (Px === "px" && typeof expiresAt === "number") {
-                        store.set(key, {value : valueString, expiresAt : Date.now() + expiresAt });
                         connection.write(Buffer.from("+OK\r\n"));
+                        store.set(key, {value : valueString, expiresAt : Date.now() + expiresAt });
                     }
                 }
                 break;
