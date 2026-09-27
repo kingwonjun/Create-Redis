@@ -1,7 +1,7 @@
 import * as net from "net";
-import {parseData} from "./parser.ts";
-import {handleCommand} from "./command.ts";
-import type {StoreValue} from "./resp.ts";
+import {parseData} from "./basic/parser.ts";
+import {handleCommand} from "./basic/command.ts";
+import type {StoreValue} from "./basic/resp.ts";
 
 const server: net.Server = net.createServer((connection: net.Socket) => {
     const store = new Map<string, StoreValue>;
