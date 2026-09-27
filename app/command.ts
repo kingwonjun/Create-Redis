@@ -4,7 +4,7 @@ import type {ParseResult, RespValue, StoreValue} from "./resp.ts";
 const encodeResp = (value: RespValue | StoreValue | string ): string => {
 
     let word: string = "";
-
+    console.log("이거 작동되나요?");
     if (typeof value === "string") {
         word += "$";
         word += value.length.toString();
