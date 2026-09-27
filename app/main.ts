@@ -9,10 +9,10 @@ console.log("Logs from your program will appear here!");
 
 const server: net.Server = net.createServer((connection: net.Socket) => {
     const store = new Map<string, StoreValue>;
-    console.log('여기는?');
     connection.on("data", (data: Buffer) => {
-        const result = parseData(data, 0)
+        const result = parseData(data, 0);
         if (result === null) {
+            console.log("여기에서 멈추냐?")
             return;
         }
         if (result.value.type === "Array") {
