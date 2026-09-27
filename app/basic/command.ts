@@ -99,10 +99,11 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                         connection.write(Buffer.from(":1\r\n"));
                     } else {
                         const list = arrayList.get(key);
+                        let length: number;
                         if (list !== undefined) {
-                            let length = list.push(value);
+                            length = list.push(value);
+                            connection.write(`:${length}\r\n`);
                         }
-                        connection.write(`:${length}\r\n`);
                     }
                 }
 
