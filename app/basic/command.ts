@@ -92,21 +92,29 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
             }
             case "rpush": {
                 const key = getString(args[0]);
-                const value = getString(args[1]);
-                if (key !== null && value !== null) {
-                    if (!arrayList.has(key)) {
-                        arrayList.set(key, [value]);
-                        connection.write(Buffer.from(":1\r\n"));
-                    } else {
-                        const list = arrayList.get(key);
-                        let length: number;
-                        if (list !== undefined) {
-                            length = list.push(value);
-                            connection.write(`:${length}\r\n`);
+                const listSize = result.value.value.length;
+                let length: number = 0;
+                for (let i = 1; i < listSize; i++) {
+                    const value = getString(args[i]);
+                    if (key !== null && value !== null) {
+                        if (!arrayList.has(key)) {
+                            arrayList.set(key, [value]);
+                            //connection.write(Buffer.from(":1\r\n"));
+                        } else {
+                            const list = arrayList.get(key);
+                            if (list !== undefined) {
+                                length = list.push(value);
+                            }
                         }
                     }
                 }
-
+                let listLength: string[] | undefined ;
+                if (key !== null) {
+                    listLength = arrayList.get(key);
+                    if (listLength !== undefined) {
+                        connection.write(`:${listLength.length}\r\n`);
+                    }
+                }
             }
         }
     }
