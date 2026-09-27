@@ -163,13 +163,12 @@ const start_dollar = (data: Buffer, idx: number): ParseResult | null => {
         if (data.length === idx) {
             return null;
         }
+        console.log(`data[idx] = ${data[idx]}`);
         word += String.fromCharCode(data[idx]);
         idx++;
     }
-    console.log(`idx = ${idx}`);
-
-    let num = Number(word);
     idx += 2;
+    let num = Number(word);
     word = "";
     while (num > 0) {
         if (data.length == idx) {
