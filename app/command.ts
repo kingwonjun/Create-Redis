@@ -69,8 +69,8 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
 
                 if (key !== null && valueString !== null) {
                     if (expiresAt === null) {
-                        store.set (key, {value: valueString, expiresAt : null});
                         connection.write(Buffer.from("+OK\r\n"));
+                        store.set (key, {value: valueString, expiresAt : null});
                     }
                     else if (Px === "px" && typeof expiresAt === "number") {
                         connection.write(Buffer.from("+OK\r\n"));
