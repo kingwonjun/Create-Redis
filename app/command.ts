@@ -51,7 +51,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
         console.log(`command ${commandName}`);
         switch (commandName) {
             case "ping":
-                connection.write(encodeResp('+PONG\r\n'));
+                connection.write('+PONG\r\n');
                 break;
             case "echo":
                 connection.write(encodeResp(args[0]));
