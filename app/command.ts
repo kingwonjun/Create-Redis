@@ -11,11 +11,7 @@ const encodeResp = (value: RespValue | StoreValue | string ): string => {
         word += value;
         word += "\r\n";
     } else {
-        if (value.value === "PING") {
-            word += "+";
-            word += "PONG";
-            word += "\r\n";
-        } else if ("type" in value && value.type === "BulkString") {
+            if ("type" in value && value.type === "BulkString") {
             console.log("PING 뜨는거야?");
             word += "$";
             word += value.value.length.toString();
@@ -55,7 +51,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
         console.log(`command ${commandName}`);
         switch (commandName) {
             case "ping":
-                connection.write(encodeResp(command.value));
+                connection.write(encodeResp('+PONG\r\n'));
                 break;
             case "echo":
                 connection.write(encodeResp(args[0]));
