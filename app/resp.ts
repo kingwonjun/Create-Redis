@@ -34,3 +34,8 @@ export type ParseResult = {
     value: RespValue;
     nextIdx: number;
 };
+
+export type StoreValue = {
+    value: string;
+    expiresAt: number | null;
+}

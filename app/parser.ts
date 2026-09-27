@@ -1,5 +1,7 @@
 import type {ParseResult, RespValue} from "./resp.ts";
 
+// TODO: readUntilCRLF switch문 중첩 재귀로 리팩토링 나중에 해보기
+
 export const parseData = (data: Buffer, idx: number): ParseResult | null => {
     let result: ParseResult | null = null;
     switch (data[idx]) {
@@ -8,6 +10,7 @@ export const parseData = (data: Buffer, idx: number): ParseResult | null => {
             result = start_star(data, idx);
             break;
         case "$".charCodeAt(0):
+            idx++;
             result = start_dollar(data, idx);
             break;
         case "+".charCodeAt(0):
@@ -26,10 +29,7 @@ export const parseData = (data: Buffer, idx: number): ParseResult | null => {
             break;
     }
 
-    if (result !== null) {
-        return result;
-    }
-    return null;
+    return result;
 };
 
 const start_integer = (data: Buffer, idx: number): ParseResult | null => {
@@ -158,7 +158,6 @@ const start_star = (data: Buffer, idx: number): ParseResult | null => {
 
 const start_dollar = (data: Buffer, idx: number): ParseResult | null => {
     let word: string = "";
-    idx++;
     while (!(data[idx] === "\r".charCodeAt(0) && data[idx + 1] === "\n".charCodeAt(0))) {
         if (data.length === idx) {
             return null;
@@ -191,3 +190,5 @@ const start_dollar = (data: Buffer, idx: number): ParseResult | null => {
     }
     return null;
 };
+
+
