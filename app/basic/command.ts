@@ -98,6 +98,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     const value = getString(args[i]);
                     if (key !== null && value !== null) {
                         if (!arrayList.has(key)) {
+                            console.log("첫번째");
                             arrayList.set(key, [value]);
                             //connection.write(Buffer.from(":1\r\n"));
                         } else {
