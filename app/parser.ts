@@ -175,6 +175,7 @@ const start_dollar = (data: Buffer, idx: number): ParseResult | null => {
             return null;
         }
         word += String.fromCharCode(data[idx]);
+        console.log(`word = ${word}`);
         idx++;
         num--;
     }
