@@ -86,9 +86,9 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 const value = store.get(key);
 
                 if (value === undefined) {
-                    console.log(`여기냐`);
                     connection.write(Buffer.from("$-1\r\n"));
                 } else  {
+                    console.log(`슬프네여`);
                     connection.write(encodeResp(value));
                 }
                 break;
