@@ -159,6 +159,7 @@ const start_star = (data: Buffer, idx: number): ParseResult | null => {
 
 const start_dollar = (data: Buffer, idx: number): ParseResult | null => {
     let word: string = "";
+    idx++;
     while (!(data[idx] === "\r".charCodeAt(0) && data[idx + 1] === "\n".charCodeAt(0))) {
         if (data.length === idx) {
             return null;
