@@ -12,7 +12,6 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
     connection.on("data", (data: Buffer) => {
         const result = parseData(data, 0);
         if (result === null) {
-            console.log("여기에서 멈추냐?")
             return;
         }
         if (result.value.type === "Array") {
