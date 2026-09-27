@@ -167,8 +167,9 @@ const start_dollar = (data: Buffer, idx: number): ParseResult | null => {
         idx++;
     }
     console.log(`idx = ${idx}`);
-    idx += 2;
+
     let num = Number(word);
+    idx += 2;
     word = "";
     while (num > 0) {
         if (data.length == idx) {
