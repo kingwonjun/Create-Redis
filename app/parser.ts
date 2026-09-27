@@ -6,11 +6,11 @@ export const parseData = (data: Buffer, idx: number): ParseResult | null => {
     let result: ParseResult | null = null;
     switch (data[idx]) {
         case "*".charCodeAt(0):
-            idx++;
+            idx+=2;
             result = start_star(data, idx);
             break;
         case "$".charCodeAt(0):
-            idx+=2;
+            idx++;
             result = start_dollar(data, idx);
             break;
         case "+".charCodeAt(0):
