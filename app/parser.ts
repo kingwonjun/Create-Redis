@@ -29,7 +29,6 @@ export const parseData = (data: Buffer, idx: number): ParseResult | null => {
             break;
     }
 
-    console.log(JSON.stringify(result, null, 2));
     return result;
 };
 
@@ -109,7 +108,6 @@ const start_star = (data: Buffer, idx: number): ParseResult | null => {
         word += String.fromCharCode(data[idx]);
         idx++;
     }
-    console.log(`idx = ${idx}`);
     idx += 2;
     let num = Number(word);
     let result: ParseResult | null = null;
@@ -163,7 +161,6 @@ const start_dollar = (data: Buffer, idx: number): ParseResult | null => {
         if (data.length === idx) {
             return null;
         }
-        console.log(`data[idx] = ${String.fromCharCode(data[idx])}`);
         word += String.fromCharCode(data[idx]);
         idx++;
     }
@@ -175,7 +172,6 @@ const start_dollar = (data: Buffer, idx: number): ParseResult | null => {
             return null;
         }
         word += String.fromCharCode(data[idx]);
-        // console.log(`word = ${word}`);
         idx++;
         num--;
     }
@@ -191,8 +187,6 @@ const start_dollar = (data: Buffer, idx: number): ParseResult | null => {
             nextIdx: idx + 2,
         };
     }
-    console.log(`idx = ${idx}`);
-    console.log("여ㅑ기냐");
     return null;
 };
 

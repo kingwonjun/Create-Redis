@@ -3,10 +3,6 @@ import {parseData} from "./parser.ts";
 import {handleCommand} from "./command.ts";
 import type {StoreValue} from "./resp.ts";
 
-console.log("Logs from your program will appear here!");
-
-
-
 const server: net.Server = net.createServer((connection: net.Socket) => {
     const store = new Map<string, StoreValue>;
     connection.on("data", (data: Buffer) => {
