@@ -1,7 +1,7 @@
 import net from "net";
 import type {ParseResult, RespValue, StoreValue} from "./resp.ts";
 
-const encodeResp = (value: RespValue | StoreValue | string ): string => {
+const encodeResp = (value: RespValue | StoreValue | string): string => {
 
     let word: string = "";
     if (typeof value === "string") {
@@ -11,7 +11,7 @@ const encodeResp = (value: RespValue | StoreValue | string ): string => {
         word += value;
         word += "\r\n";
     } else {
-            if ("type" in value && value.type === "BulkString") {
+        if ("type" in value && value.type === "BulkString") {
             word += "$";
             word += value.value.length.toString();
             word += "\r\n"
@@ -33,8 +33,8 @@ const encodeResp = (value: RespValue | StoreValue | string ): string => {
     return word;
 }
 
-const getString = (value: RespValue ): string | null => {
-        if (typeof value.value === "string") {
+const getString = (value: RespValue): string | null => {
+    if (typeof value.value === "string") {
         return value.value;
     }
     return null;
@@ -59,7 +59,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 if (args[2] !== undefined) {
                     px = getString(args[2])?.toLowerCase();
                 }
-                let expiresAt : number | null;
+                let expiresAt: number | null;
                 if (px == "px") {
                     expiresAt = Number(args[3].value);
                 } else {
@@ -69,11 +69,10 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 if (key !== null && valueString !== null) {
                     if (expiresAt === null) {
                         connection.write(Buffer.from("+OK\r\n"));
-                        store.set (key, {value: valueString, expiresAt : null});
-                    }
-                    else if (px === "px" && typeof expiresAt === "number") {
+                        store.set(key, {value: valueString, expiresAt: null});
+                    } else if (px === "px" && typeof expiresAt === "number") {
                         connection.write(Buffer.from("+OK\r\n"));
-                        store.set(key, {value : valueString, expiresAt : Date.now() + expiresAt });
+                        store.set(key, {value: valueString, expiresAt: Date.now() + expiresAt});
                     }
                 }
                 break;
@@ -86,7 +85,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 const value = store.get(key);
                 if (value === undefined) {
                     connection.write(Buffer.from("$-1\r\n"));
-                } else  {
+                } else {
                     connection.write(encodeResp(value));
                 }
                 break;
