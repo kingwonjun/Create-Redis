@@ -15,6 +15,7 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
             return;
         }
         if (result.value.type === "Array") {
+            console.log("여기는 들어오냐")
             handleCommand(result, connection, store);
         }
     });
