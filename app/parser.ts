@@ -28,6 +28,7 @@ export const parseData = (data: Buffer, idx: number): ParseResult | null => {
         default:
             break;
     }
+    console.log(JSON.stringify(result, null, 2));
 
     return result;
 };
