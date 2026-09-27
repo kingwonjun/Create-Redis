@@ -103,7 +103,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                             const length = list.push(value);
                             console.log(`length: ${length}`);
                         }
-                        connection.write(`:${length}'\r\n`);
+                        connection.write(`:${length}\r\n`);
                     }
                 }
 
