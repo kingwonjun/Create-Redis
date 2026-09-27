@@ -62,7 +62,9 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
             case "set": {
                 console.log(`set???`);
                 const key = getString(args[0]);
+                console.log(`key = ${key}`);
                 const valueString = getString(args[1]);
+                console.log(`value = ${valueString}`);
                 const Px = getString(args[2])?.toLowerCase();
                 let expiresAt : number | null;
                 if (Px == "px") {
