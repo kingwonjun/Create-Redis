@@ -9,13 +9,13 @@ console.log("Logs from your program will appear here!");
 
 const server: net.Server = net.createServer((connection: net.Socket) => {
     const store = new Map<string, StoreValue>;
+    console.log('여기는?');
     connection.on("data", (data: Buffer) => {
         const result = parseData(data, 0)
         if (result === null) {
             return;
         }
         if (result.value.type === "Array") {
-            console.log("여기는 들어오냐")
             handleCommand(result, connection, store);
         }
     });
