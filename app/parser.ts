@@ -10,7 +10,7 @@ export const parseData = (data: Buffer, idx: number): ParseResult | null => {
             result = start_star(data, idx);
             break;
         case "$".charCodeAt(0):
-            idx++;
+            idx+=2;
             result = start_dollar(data, idx);
             break;
         case "+".charCodeAt(0):
@@ -159,7 +159,6 @@ const start_star = (data: Buffer, idx: number): ParseResult | null => {
 
 const start_dollar = (data: Buffer, idx: number): ParseResult | null => {
     let word: string = "";
-    idx++;
     while (!(data[idx] === "\r".charCodeAt(0) && data[idx + 1] === "\n".charCodeAt(0))) {
         if (data.length === idx) {
             return null;
