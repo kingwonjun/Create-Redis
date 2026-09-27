@@ -66,6 +66,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 const valueString = getString(args[1]);
                 console.log(`value = ${valueString}`);
                 const Px = getString(args[2])?.toLowerCase();
+                console.log(`Px = ${Px}`);
                 let expiresAt : number | null;
                 if (Px == "px") {
                     expiresAt = Number(args[3].value);
