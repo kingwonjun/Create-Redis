@@ -51,6 +51,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
     if (result.value.type === "Array" && result.value.value[0].type === "BulkString") {
         const [command, ...args] = result.value.value;
         const commandName = command.value.toLowerCase();
+        consoel.log(`command ${commandName}`);
         switch (commandName) {
             case "ping":
                 connection.write(encodeResp(command.value));
@@ -68,7 +69,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 } else {
                     expiresAt = null;
                 }
-                
+
                 console.log(`expiresAt = ${expiresAt}`);
                 console.log(`typeof = ${typeof expiresAt}`);
 
