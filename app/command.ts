@@ -22,8 +22,8 @@ const encodeResp = (value: RespValue | StoreValue | string ): string => {
             word += value.value;
             word += "\r\n";
         } else if ("expiresAt" in value) {
-            console.log(`Date.now = ${Date.now}`);
-            console.log()
+            console.log(`Date.now = ${Date.now()}`);
+            console.log(`value.expiresAt = ${value.expiresAt}`);
             if (value.expiresAt === null || Date.now() < value.expiresAt) {
                 word += "$";
                 word += value.value.length.toString();
@@ -88,7 +88,6 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 if (value === undefined) {
                     connection.write(Buffer.from("$-1\r\n"));
                 } else  {
-                    console.log(`슬프네여`);
                     connection.write(encodeResp(value));
                 }
                 break;
