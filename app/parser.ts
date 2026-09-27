@@ -4,7 +4,6 @@ import type {ParseResult, RespValue} from "./resp.ts";
 
 export const parseData = (data: Buffer, idx: number): ParseResult | null => {
     let result: ParseResult | null = null;
-    console.log(2);
     switch (data[idx]) {
         case "*".charCodeAt(0):
             idx++;
@@ -29,7 +28,8 @@ export const parseData = (data: Buffer, idx: number): ParseResult | null => {
         default:
             break;
     }
-    console.log(result);
+
+    console.log(JSON.stringify(result, null, 2));
     return result;
 };
 
