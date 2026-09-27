@@ -99,6 +99,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                         connection.write(Buffer.from(":1\r\n"));
                     } else {
                         const list = arrayList.get(key);
+                        console.log(`여기 작동되나요?`);
                         if (list !== undefined) {
                             const length = list.push(value);
                         }
