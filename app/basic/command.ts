@@ -100,8 +100,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     } else {
                         const list = arrayList.get(key);
                         if (list !== undefined) {
-                            const length = list.push(value);
-                            console.log(`length: ${length}`);
+                            let length = list.push(value);
                         }
                         connection.write(`:${length}\r\n`);
                     }
