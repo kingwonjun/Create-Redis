@@ -117,7 +117,6 @@ const start_star = (data: Buffer, idx: number): ParseResult | null => {
         switch (String.fromCharCode(data[idx])) {
             case "*":
                 idx++;
-                // num--;
                 result = start_star(data, idx);
                 break;
             case "-":
@@ -176,7 +175,7 @@ const start_dollar = (data: Buffer, idx: number): ParseResult | null => {
             return null;
         }
         word += String.fromCharCode(data[idx]);
-        console.log(`word = ${word}`);
+        // console.log(`word = ${word}`);
         idx++;
         num--;
     }
