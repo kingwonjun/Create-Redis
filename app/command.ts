@@ -65,6 +65,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 console.log(`key = ${key}`);
                 const valueString = getString(args[1]);
                 console.log(`value = ${valueString}`);
+                console.log("args[2] =", args[2]);
                 const Px = getString(args[2])?.toLowerCase();
                 console.log(`여기서 왜 멈추지?`);
                 console.log(`Px = ${Px}`);
