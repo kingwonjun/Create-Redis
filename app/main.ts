@@ -10,8 +10,7 @@ console.log("Logs from your program will appear here!");
 const server: net.Server = net.createServer((connection: net.Socket) => {
     const store = new Map<string, StoreValue>;
     connection.on("data", (data: Buffer) => {
-        const newData = (Buffer.from('*3\r\n$1\r\n1\r\n$1\r\n1\r\n$1\r\n1\r\n'));
-        const result = parseData(newData, 0);
+        const result = parseData(data, 0);
         if (result === null) {
             return;
         }
