@@ -3,7 +3,7 @@
   "description": "Build your own Redis challenge, from CodeCrafters",
   "type": "module",
   "scripts": {
-    "dev": "bun run app/main.ts"
+    "dev": "bun run app/basic/main.ts"
   },
   "devDependencies": {
     "@types/bun": "^1.4.2",

@@ -12,15 +12,12 @@ const encodeResp = (value: RespValue | StoreValue | string ): string => {
         word += "\r\n";
     } else {
             if ("type" in value && value.type === "BulkString") {
-            console.log("PING 뜨는거야?");
             word += "$";
             word += value.value.length.toString();
             word += "\r\n"
             word += value.value;
             word += "\r\n";
         } else if ("expiresAt" in value) {
-            console.log(`Date.now = ${Date.now()}`);
-            console.log(`value.expiresAt = ${value.expiresAt}`);
             if (value.expiresAt === null || Date.now() < value.expiresAt) {
                 word += "$";
                 word += value.value.length.toString();
@@ -43,12 +40,11 @@ const getString = (value: RespValue ): string | null => {
     return null;
 }
 
-export const handleCommand = (result: ParseResult, connection: net.Socket, store: Map<string, StoreValue>): void => {
+export const handleCommand = (result: ParseResult, connection: net.Socket, store: Map<string, StoreValue>, arrayList: Map<string, string[]>): void => {
 
     if (result.value.type === "Array" && result.value.value[0].type === "BulkString") {
         const [command, ...args] = result.value.value;
         const commandName = command.value.toLowerCase();
-        console.log(`command ${commandName}`);
         switch (commandName) {
             case "ping":
                 connection.write('+PONG\r\n');
@@ -57,27 +53,18 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 connection.write(encodeResp(args[0]));
                 break;
             case "set": {
-                console.log(`set???`);
                 const key = getString(args[0]);
-                console.log(`key = ${key}`);
                 const valueString = getString(args[1]);
-                console.log(`value = ${valueString}`);
-                console.log("args[2] =", args[2]);
                 let px: string | undefined;
                 if (args[2] !== undefined) {
                     px = getString(args[2])?.toLowerCase();
                 }
-                console.log(`여기서 왜 멈추지?`);
-                console.log(`px = ${px}`);
                 let expiresAt : number | null;
                 if (px == "px") {
                     expiresAt = Number(args[3].value);
                 } else {
                     expiresAt = null;
                 }
-
-                console.log(`expiresAt = ${expiresAt}`);
-                console.log(`typeof = ${typeof expiresAt}`);
 
                 if (key !== null && valueString !== null) {
                     if (expiresAt === null) {
@@ -93,19 +80,33 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
             }
             case "get": {
                 const key = getString(args[0]);
-
                 if (key === null) {
                     break;
                 }
-
                 const value = store.get(key);
-
                 if (value === undefined) {
                     connection.write(Buffer.from("$-1\r\n"));
                 } else  {
                     connection.write(encodeResp(value));
                 }
                 break;
+            }
+            case "RPUSH": {
+                const key = getString(args[0]);
+                const value = getString(args[1]);
+                if (key !== null && value !== null) {
+                    if (!arrayList.has(key)) {
+                        arrayList.set(key, [value]);
+                        connection.write(Buffer.from(":1\r\n"));
+                    } else {
+                        const list = arrayList.get(key);
+                        if (list !== undefined) {
+                            const length = list.push(value);
+                        }
+                        connection.write(`:${length}'\r\n`);
+                    }
+                }
+
             }
         }
     }
