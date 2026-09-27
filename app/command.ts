@@ -22,7 +22,7 @@ const encodeResp = (value: RespValue | StoreValue | string ): string => {
             word += value.value;
             word += "\r\n";
         } else if ("expiresAt" in value) {
-            if (value.expiresAt === null || Date.now() >= value.expiresAt) {
+            if (value.expiresAt === null || Date.now() < value.expiresAt) {
                 word += "$";
                 word += value.value.length.toString();
                 word += "\r\n"
