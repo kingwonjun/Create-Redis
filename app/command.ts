@@ -16,6 +16,7 @@ const encodeResp = (value: RespValue | StoreValue | string ): string => {
             word += "PONG";
             word += "\r\n";
         } else if ("type" in value && value.type === "BulkString") {
+            console.log("PING 뜨는거야?");
             word += "$";
             word += value.value.length.toString();
             word += "\r\n"
