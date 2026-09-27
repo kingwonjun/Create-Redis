@@ -66,11 +66,14 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 const valueString = getString(args[1]);
                 console.log(`value = ${valueString}`);
                 console.log("args[2] =", args[2]);
-                const Px = getString(args[2])?.toLowerCase();
+                let px: string | undefined;
+                if (args[2] !== undefined) {
+                    px = getString(args[2])?.toLowerCase();
+                }
                 console.log(`여기서 왜 멈추지?`);
-                console.log(`Px = ${Px}`);
+                console.log(`px = ${px}`);
                 let expiresAt : number | null;
-                if (Px == "px") {
+                if (px == "px") {
                     expiresAt = Number(args[3].value);
                 } else {
                     expiresAt = null;
@@ -84,7 +87,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                         connection.write(Buffer.from("+OK\r\n"));
                         store.set (key, {value: valueString, expiresAt : null});
                     }
-                    else if (Px === "px" && typeof expiresAt === "number") {
+                    else if (px === "px" && typeof expiresAt === "number") {
                         connection.write(Buffer.from("+OK\r\n"));
                         store.set(key, {value : valueString, expiresAt : Date.now() + expiresAt });
                     }
