@@ -98,7 +98,6 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     const value = getString(args[i]);
                     if (key !== null && value !== null) {
                         if (!arrayList.has(key)) {
-                            console.log("첫번째");
                             arrayList.set(key, [value]);
                             //connection.write(Buffer.from(":1\r\n"));
                         } else {
@@ -108,6 +107,9 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                             }
                         }
                     }
+                }
+                if (getString(args[0]) !== null) {
+                    console.log(`arrayList = ${arrayList.get(<string>getString(args[0]))}`)
                 }
                 let listLength: string[] | undefined ;
                 if (key !== null) {
