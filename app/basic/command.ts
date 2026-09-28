@@ -118,7 +118,13 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
             }
             case "lrange": {
                 const listSize = result.value.value.length;
-
+                if (args[0] !== undefined ||
+                    Number(args[1].value) > listSize - 1 ||
+                    Number(args[listSize - 1]) > listSize - 1 ||
+                    Number(args[listSize - 1]) < Number(args[1].value)) {
+                    connection.write(Buffer.from("*0\r\n"));
+                }
+                
                 if (typeof args[0].value === "string" && arrayList.get(args[0].value) !== undefined) {
                     console.log(`args[1].value = ${args[1].value}`);
                     let word: string = "";
@@ -138,11 +144,6 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                         word += "\r\n";
                     }
                     connection.write(Buffer.from(word));
-                } else if (args[0] !== undefined ||
-                    Number(args[1].value) > listSize - 1 ||
-                    Number(args[listSize - 1]) > listSize - 1 ||
-                    Number(args[listSize - 1]) < Number(args[1].value)) {
-                    connection.write(Buffer.from("*0\r\n"));
                 }
                 break;
             }
