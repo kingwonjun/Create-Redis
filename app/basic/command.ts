@@ -93,7 +93,6 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
             case "rpush": {
                 const key = getString(args[0]);
                 const listSize = result.value.value.length;
-                let length: number = 0;
                 for (let i = 1; i < listSize; i++) {
                     const value = getString(args[i]);
                     if (key !== null && value !== null) {
@@ -102,6 +101,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                             //connection.write(Buffer.from(":1\r\n"));
                         } else {
                             const list = arrayList.get(key);
+                            console.log(`list: ${JSON.stringify(list, null, 2)}`);
                             if (list !== undefined) {
                                 length = list.push(value);
                             }
