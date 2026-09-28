@@ -145,7 +145,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     console.log(`list.length = ${list.length}`);
                     word += list.length;
                     console.log(`word ${word} a`);
-                    end = list.length;
+                    end = list.length - 1;
                 } else {
                     word += (Number(args[2].value) - Number(args[1].value) + 1);
                     console.log(`word ${word} b`);
