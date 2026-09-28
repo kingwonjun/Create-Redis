@@ -120,8 +120,8 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 const listSize = result.value.value.length;
                 if (args[0] === undefined ||
                     Number(args[1].value) > listSize - 1 ||
-                    Number(args[listSize - 1]) > listSize - 1 ||
-                    Number(args[listSize - 1]) < Number(args[1].value)) {
+                    Number(args[listSize - 1].value) > listSize - 1 ||
+                    Number(args[listSize - 1].value) < Number(args[1].value)) {
                     connection.write(Buffer.from("*0\r\n"));
                 } else if (typeof args[0].value === "string" && arrayList.get(args[0].value) !== undefined) {
                     console.log(`args[1].value = ${args[1].value}`);
