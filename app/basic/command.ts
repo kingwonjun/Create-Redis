@@ -189,6 +189,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
             }
             case "lpop" : {
                 if (args[0].value === undefined || args[0].type !== "BulkString") {
+                    console.log("1");
                     break;
                 }
                 const list = arrayList.get(args[0].value);
