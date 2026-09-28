@@ -104,6 +104,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                             const list = arrayList.get(key);
                             console.log(`list: ${JSON.stringify(list, null, 2)}`);
                             if (list !== undefined) {
+                                console.log("숫자세기")
                                 length = list.push(value);
                             }
                         }
