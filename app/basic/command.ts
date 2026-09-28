@@ -201,16 +201,16 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 }
                 if (args[1].type === "BulkString") {
                     console.log(`4`);
-                    let count : number = Number(args[1].value);
+                    let count: number = Number(args[1].value);
                     connection.write(Buffer.from(`*${args[1].value}\r\n`));
-                    while(count > 0) {
+                    while (count > 0) {
                         connection.write(Buffer.from(`$${list[0].length}\r\n${list.shift()}\r\n`));
                         count--;
                     }
                 }
                 break;
             }
-        }
+
         }
     }
 }
