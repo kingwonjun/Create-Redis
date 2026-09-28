@@ -176,15 +176,27 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 break;
             }
             case "llen": {
-                let list: string[] | undefined;
-                if (typeof args[0].value === "string" && arrayList.get(args[0].value) !== undefined) {
-                    list = arrayList.get(args[0].value);
-                    if (list !== undefined) {
-                        connection.write(Buffer.from(`:${list.length}\r\n`))
-                        break;
-                    }
+                if (typeof args[0].value !== "string") {
+                    break;
                 }
-                connection.write(Buffer.from(":0\r\n"));
+                const list = arrayList.get(args[0].value);
+                if (list == undefined) {
+                    connection.write(Buffer.from(":0\r\n"));
+                    break;
+                }
+                connection.write(Buffer.from(`:${list.length}\r\n`));
+                break;
+            }
+            case "lpop" : {
+                if (typeof args[0].value !== "string") {
+                    break;
+                }
+                const list = arrayList.get(args[0].value);
+                if (list == undefined) {
+                    connection.write(Buffer.from("$-1\r\n"));
+                    break;
+                }
+                connection.write(Buffer.from(`:${list.shift()}\r\n`));
                 break;
             }
         }
