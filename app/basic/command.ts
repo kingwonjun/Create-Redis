@@ -123,17 +123,17 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     console.log('a');
                     return;
                 }
-                if (Number(args[1].value) > listSize) {
+                if (Number(args[1].value) > Number(args[2].value)) {
                     connection.write(Buffer.from("*0\r\n"));
                     console.log('b');
                     return;
                 }
-                if (Number(args[listSize].value) > listSize) {
+                if (Number(args[1].value) > listSize) {
                     connection.write(Buffer.from("*0\r\n"));
                     console.log('c');
                     return;
                 }
-                if (Number(args[listSize].value) < Number(args[1].value)) {
+                if (Number(args[2].value) > listSize) {
                     connection.write(Buffer.from("*0\r\n"));
                     console.log('d');
                     return;
