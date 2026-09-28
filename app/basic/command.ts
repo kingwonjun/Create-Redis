@@ -148,22 +148,14 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     end = Number(args[2].value);
                 }
                 word += "\r\n";
+                console.log(`end : ${end}`);
                 for (let i = Number(args[1].value); i <= end; i++) {
-                    console.log("여기까지 들어오나요?");
-                    if (i == end) {
-                        break;
-                    }
+                    console.log(`i -> ${i}`);
                     word += "$";
-                    console.log('a');
                     word += list[i].length;
-                    console.log('b');
                     word += "\r\n";
-                    console.log('c');
                     word += list[i];
-                    console.log('d');
                     word += "\r\n";
-
-                    console.log('a');
                     console.log(`word : ${JSON.stringify(word)}`);
                 }
                 connection.write(Buffer.from(word));
