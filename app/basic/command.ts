@@ -90,7 +90,9 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 }
                 break;
             }
-            case "rpush": {
+            case "rpush":
+            case "lpush":
+            {
                 const key = getString(args[0]);
                 const listSize = result.value.value.length;
 
@@ -101,8 +103,10 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                             arrayList.set(key, [value]);
                         } else {
                             const list = arrayList.get(key);
-                            if (list !== undefined) {
+                            if (list !== undefined && commandName === "rpush") {
                                 list.push(value);
+                            } else if (list !== undefined && commandName == "lpush") {
+                                list.unshift(value);
                             }
                         }
                     }
@@ -116,7 +120,8 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 }
                 break;
             }
-            case "lrange": {
+            case "lrange":
+            {
                 let list: string[] | undefined;
                 if (typeof args[0].value === "string" && arrayList.get(args[0].value) !== undefined) {
                     list = arrayList.get(args[0].value);
