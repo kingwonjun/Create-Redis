@@ -120,6 +120,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 const listSize = result.value.value.length;
 
                 if (args[1].type === "Integer" && args[2].type === "Integer") {
+                    console.log("여기 지나가나요?");
                     let word: string = "";
                     word += "*";
                     word += Number(args[2].value) - Number(args[1].value) + 1;
