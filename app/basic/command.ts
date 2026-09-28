@@ -110,9 +110,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                         }
                     }
                 }
-                if (typeof key === "string") {
-                    console.log(arrayList.get(key));
-                }
+                console.log("cc");
                 let listLength: string[] | undefined ;
                 if (key !== null) {
                     listLength = arrayList.get(key);
