@@ -105,6 +105,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                             if (list !== undefined) {
                                 list.push(value);
                             }
+                            console.log("aa");
                         }
                     }
                 }
