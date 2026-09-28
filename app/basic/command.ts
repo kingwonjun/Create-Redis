@@ -95,19 +95,24 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 const listSize = result.value.value.length;
                 console.log(`listSize: ${listSize}`);
                 for (let i = 1; i < listSize; i++) {
-                    console.log("i:", i, "args.length:", args.length, "args[i]:", args[i]);
+                    console.log('a');
                     const value = getString(args[i]);
+                    console.log('b');
                     if (key !== null && value !== null) {
+                        console.log('c');
                         if (!arrayList.has(key)) {
+                            console.log('d');
                             arrayList.set(key, [value]);
+                            console.log('e');
                             // connection.write(Buffer.from(":1\r\n"));
                         } else {
                             const list = arrayList.get(key);
+                            console.log('f');
                             if (list !== undefined) {
-                                console.log("숫자세기")
+                                console.log('g');
                                 length = list.push(value);
                             }
-                            console.log(`여기는 작동되나요?`);
+                            console.log('h');
                         }
                     }
                 }
