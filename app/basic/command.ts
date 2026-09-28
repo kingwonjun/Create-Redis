@@ -142,6 +142,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 word += "*";
                 console.log(`word ${word}`);
                 if (list.length < Number(args[2].value)) {
+                    console.log(`list.length = ${list.length}`);
                     word += list.length;
                     console.log(`word ${word} a`);
                     end = list.length;
