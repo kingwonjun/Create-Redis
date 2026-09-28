@@ -162,6 +162,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     // console.log(`word : ${JSON.stringify(word)}`);
                 }
                 connection.write(Buffer.from(word));
+                console.log("확인");
                 break;
             }
         }
