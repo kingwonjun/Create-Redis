@@ -93,12 +93,12 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
             case "rpush": {
                 const key = getString(args[0]);
                 const listSize = result.value.value.length;
-                for (let i = 1; i < listSize; i++) {
+                for (let i = 1; i < listSize + 1; i++) {
                     const value = getString(args[i]);
                     if (key !== null && value !== null) {
                         if (!arrayList.has(key)) {
                             arrayList.set(key, [value]);
-                            //connection.write(Buffer.from(":1\r\n"));
+                            // connection.write(Buffer.from(":1\r\n"));
                         } else {
                             const list = arrayList.get(key);
                             console.log(`list: ${JSON.stringify(list, null, 2)}`);
