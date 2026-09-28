@@ -102,10 +102,12 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                             arrayList.set(key, [value]);
                             // connection.write(Buffer.from(":1\r\n"));
                         } else {
-                            const list = arrayList.get(key);if (list !== undefined) {
+                            const list = arrayList.get(key);
+                            if (list !== undefined) {
                                 console.log("숫자세기")
                                 length = list.push(value);
                             }
+                            console.log(`여기는 작동되나요?`);
                         }
                     }
                 }
