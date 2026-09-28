@@ -132,6 +132,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                         word += args[i].value;
                         word += "\r\n";
                     }
+                    connection.write(Buffer.from(word));
                 } else if (args[0] !== undefined ||
                     Number(args[1].value) > listSize - 1 ||
                     Number(args[listSize - 1]) > listSize - 1 ||
