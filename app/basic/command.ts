@@ -118,9 +118,9 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
             }
             case "lrange":
                 const listSize = result.value.value.length;
-
+                console.log(`args[1].type = ${args[1].type}`);
                 if (args[1].type === "Integer" && args[2].type === "Integer") {
-                    console.log("여기 지나가나요?");
+
                     let word: string = "";
                     word += "*";
                     word += Number(args[2].value) - Number(args[1].value) + 1;
