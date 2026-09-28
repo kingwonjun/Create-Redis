@@ -202,7 +202,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 if (typeof args[1].value === "string") {
                     break;
                 }
-                if (typeof args[1].type === "number") {
+                if (typeof args[1].value === "string" && args[1].type === "Integer") {
                     let count : number = args[1].value;
                     connection.write(Buffer.from(`*${args[1].value}\r\n`));
                     while(count > 0) {
