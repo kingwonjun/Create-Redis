@@ -181,10 +181,11 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     list = arrayList.get(args[0].value);
                     if (list !== undefined) {
                         connection.write(Buffer.from(`:${list.length}\r\n`))
-                    } else {
-                        connection.write(Buffer.from(":0\r\n"));
+                        break;
                     }
-                } 
+                }
+                connection.write(Buffer.from(":0\r\n"));
+                break;
             }
         }
     }
