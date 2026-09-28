@@ -93,33 +93,51 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
             case "rpush": {
                 const key = getString(args[0]);
                 const listSize = result.value.value.length;
-                console.log(`listSize: ${listSize}`);
-                for (let i= 1; i < listSize - 1; i++) {
+
+                for (let i = 1; i < listSize - 1; i++) {
                     const value = getString(args[i]);
-                    console.log(`value: ${value}`);
                     if (key !== null && value !== null) {
                         if (!arrayList.has(key)) {
                             arrayList.set(key, [value]);
-                            // connection.write(Buffer.from(":1\r\n"));
-                            console.log("dd");
                         } else {
                             const list = arrayList.get(key);
                             if (list !== undefined) {
                                 list.push(value);
                             }
-                            console.log("aa");
                         }
                     }
                 }
-                console.log("cc");
-                let listLength: string[] | undefined ;
+                let listLength: string[] | undefined;
                 if (key !== null) {
                     listLength = arrayList.get(key);
                     if (listLength !== undefined) {
                         connection.write(`:${listLength.length}\r\n`);
                     }
                 }
+                break;
             }
+            case "lrange":
+                const listSize = result.value.value.length;
+
+                if (args[1].type === "Integer" && args[2].type === "Integer") {
+                    let word: string = "";
+                    word += "*";
+                    word += Number(args[2].value) - Number(args[1].value) + 1;
+                    word += "\r\n";
+                    for (let i = Number(args[1].value); i <= Number(args[2].value); i++) {
+                        word += "$";
+                        word += args[i].value.length.toString();
+                        word += "\r\n";
+                        word += args[i].value;
+                        word += "\r\n";
+                    }
+                } else if (args[0] !== undefined ||
+                    Number(args[1].value) > listSize - 1 ||
+                    Number(args[listSize - 1]) > listSize - 1 ||
+                    Number(args[listSize - 1]) < Number(args[1].value)) {
+                    connection.write(Buffer.from("*0\r\n"));
+                }
+                break;
         }
     }
 }
