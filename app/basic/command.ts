@@ -116,18 +116,23 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 }
                 break;
             }
-            case "lrange":
+            case "lrange": {
                 const listSize = result.value.value.length;
 
-                if (args[1].type === "BulkString" && args[2].type === "BulkString") {
+                if (typeof args[0].value === "string" && arrayList.get(args[0].value) !== undefined) {
                     console.log(`args[1].value = ${args[1].value}`);
                     let word: string = "";
                     word += "*";
                     word += Number(args[2].value) - Number(args[1].value) + 1;
                     word += "\r\n";
                     for (let i = Number(args[1].value); i <= Number(args[2].value); i++) {
+                        const list = arrayList.get(args[0].value);
                         word += "$";
-                        word += args[i].value.length.toString();
+                        if (list === undefined) {
+                            connection.write(Buffer.from("*0\r\n"));
+                        } else {
+                            word += list[i];
+                        }
                         word += "\r\n";
                         word += args[i].value;
                         word += "\r\n";
@@ -140,6 +145,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     connection.write(Buffer.from("*0\r\n"));
                 }
                 break;
+            }
         }
     }
 }
