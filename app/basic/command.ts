@@ -134,8 +134,14 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 if (start < 0) {
                     start = list.length + start;
                 }
+                if (start < 0) {
+                    start = 0;
+                }
                 if (stop < 0) {
                     stop = list.length + stop;
+                }
+                if (stop < 0) {
+                    stop = 0;
                 }
                 if (start > stop) {
                     connection.write(Buffer.from("*0\r\n"));
