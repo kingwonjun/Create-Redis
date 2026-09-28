@@ -200,7 +200,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     break;
                 }
                 if (args[1] === undefined) {
-                    connection.write(Buffer.from(`*1\r\n$${list[0].length}\r\n${list.shift()}\r\n`));
+                    connection.write(Buffer.from(`$${list[0].length}\r\n${list.shift()}\r\n`));
                 }
                 else if (args[1].type === "BulkString") {
                     console.log(`4`);
