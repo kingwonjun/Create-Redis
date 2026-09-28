@@ -117,7 +117,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 break;
             }
             case "lrange": {
-                const listSize = result.value.value.length - 1;
+                const listSize = result.value.value.length;
                 if (args[0] === undefined) {
                     connection.write(Buffer.from("*0\r\n"));
                     console.log('a');
