@@ -131,6 +131,12 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 }
                 let start = Number(args[1].value);
                 let stop = Number(args[2].value);
+                if (start < 0) {
+                    start = list.length + start;
+                }
+                if (stop < 0) {
+                    stop = list.length + stop;
+                }
                 if (start > stop) {
                     connection.write(Buffer.from("*0\r\n"));
                     return;
