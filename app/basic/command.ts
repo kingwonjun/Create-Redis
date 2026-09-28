@@ -140,14 +140,18 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 let word: string = "";
                 let end: number;
                 word += "*";
+                console.log(`word ${word}`);
                 if (list.length < Number(args[2].value)) {
                     word += list.length;
+                    console.log(`word ${word} a`);
                     end = list.length;
                 } else {
                     word += (Number(args[2].value) - Number(args[1].value) + 1);
+                    console.log(`word ${word} b`);
                     end = Number(args[2].value);
                 }
                 word += "\r\n";
+                console.log(`word ${word}` c);
                 console.log(`end : ${end}`);
                 for (let i = Number(args[1].value); i < end; i++) {
                     word += "$";
