@@ -203,9 +203,11 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     break;
                 }
                 if (typeof args[1].value === "number") {
+                    let count : number = args[1].value;
                     connection.write(Buffer.from(`*${args[1].value}\r\n`));
-                    for (let i = 0; i < args[1].value; i++) {
-                        connection.write(Buffer.from(`$${list[i].length}\r\n${list.shift()}\r\n`));
+                    while(count > 0) {
+                        connection.write(Buffer.from(`$${list[0].length}\r\n${list.shift()}\r\n`));
+                        count--;
                     }
                 }
                 break;
