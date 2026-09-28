@@ -94,13 +94,14 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 const key = getString(args[0]);
                 const listSize = result.value.value.length;
                 console.log(`listSize: ${listSize}`);
-                for (let i = 1; i < listSize; i++) {
+                for (let i= 1; i < listSize; i++) {
                     const value = getString(args[i]);
                     console.log(`value: ${value}`);
                     if (key !== null && value !== null) {
                         if (!arrayList.has(key)) {
                             arrayList.set(key, [value]);
                             // connection.write(Buffer.from(":1\r\n"));
+                            console.log("dd");
                         } else {
                             const list = arrayList.get(key);
                             if (list !== undefined) {
