@@ -94,7 +94,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 const key = getString(args[0]);
                 const listSize = result.value.value.length;
                 console.log(`listSize: ${listSize}`);
-                for (let i= 1; i < listSize; i++) {
+                for (let i= 1; i < listSize - 1; i++) {
                     const value = getString(args[i]);
                     console.log(`value: ${value}`);
                     if (key !== null && value !== null) {
