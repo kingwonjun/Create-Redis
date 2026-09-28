@@ -150,15 +150,12 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 word += "\r\n";
                 console.log(`end : ${end}`);
                 for (let i = Number(args[1].value); i <= end; i++) {
-                    if (i === end) {
-                        break;
-                    }
                     word += "$";
                     word += list[i].length;
                     word += "\r\n";
                     word += list[i];
                     word += "\r\n";
-                    console.log(`word : ${JSON.stringify(word)}`);
+                    // console.log(`word : ${JSON.stringify(word)}`);
                 }
                 connection.write(Buffer.from(word));
                 break;
