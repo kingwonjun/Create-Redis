@@ -196,7 +196,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     connection.write(Buffer.from("$-1\r\n"));
                     break;
                 }
-                connection.write(Buffer.from(`${list[0].length}\r\n${list.shift()}\r\n`));
+                connection.write(Buffer.from(`$${list[0].length}\r\n${list.shift()}\r\n`));
                 break;
             }
         }
