@@ -143,11 +143,17 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 }
                 console.log("여기까지 들어오나요?");
                 let word: string = "";
+                let end: number;
                 word += "*";
-                word += (Number(args[2].value) - Number(args[1].value) + 1);
+                if (list.length < Number(args[2].value)) {
+                    word += list.length;
+                    end = list.length;
+                } else {
+                    word += (Number(args[2].value) - Number(args[1].value) + 1);
+                    end = Number(args[2].value);
+                }
                 word += "\r\n";
-
-                for (let i = Number(args[1].value); i <= Number(args[2].value); i++) {
+                for (let i = Number(args[1].value); i <= end; i++) {
                     word += "$";
                     word += list[i].length;
                     word += "\r\n";
