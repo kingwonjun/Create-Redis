@@ -119,23 +119,23 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
             case "lrange":
                 const listSize = result.value.value.length;
                 console.log(`args[1].type = ${args[1].type}`);
-                if (args[1].type === "Integer" && args[2].type === "Integer") {
+                if (args[2].type === "Integer" && args[3].type === "Integer") {
 
                     let word: string = "";
                     word += "*";
-                    word += Number(args[2].value) - Number(args[1].value) + 1;
+                    word += Number(args[3].value) - Number(args[2].value) + 1;
                     word += "\r\n";
-                    for (let i = Number(args[1].value); i <= Number(args[2].value); i++) {
+                    for (let i = Number(args[2].value); i <= Number(args[3].value); i++) {
                         word += "$";
                         word += args[i].value.length.toString();
                         word += "\r\n";
                         word += args[i].value;
                         word += "\r\n";
                     }
-                } else if (args[0] !== undefined ||
-                    Number(args[1].value) > listSize - 1 ||
+                } else if (args[1] !== undefined ||
+                    Number(args[2].value) > listSize - 1 ||
                     Number(args[listSize - 1]) > listSize - 1 ||
-                    Number(args[listSize - 1]) < Number(args[1].value)) {
+                    Number(args[listSize - 1]) < Number(args[2].value)) {
                     connection.write(Buffer.from("*0\r\n"));
                 }
                 break;
