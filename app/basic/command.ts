@@ -163,6 +163,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     word += "\r\n";
                     word += list[i];
                     word += "\r\n";
+                    console.log(`word : ${JSON.stringify(word)}`);
                 }
                 connection.write(Buffer.from(word));
                 break;
