@@ -141,12 +141,6 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     console.log('c');
                     return;
                 }
-                if (Number(args[2].value) > list.length) {
-                    console.log(`a: ${Number(args[2].value)} listsize: ${list.length}`);
-                    connection.write(Buffer.from("*0\r\n"));
-                    console.log('d');
-                    return;
-                }
                 let word: string = "";
                 word += "*";
                 word += Number(args[2].value) - Number(args[1].value) + 1;
