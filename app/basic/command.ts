@@ -117,7 +117,15 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 break;
             }
             case "lrange": {
-                const listSize = result.value.value.length + 1;
+                let list: string[] | undefined;
+                if (typeof args[0].value === "string" && arrayList.get(args[0].value) !== undefined) {
+                    list = arrayList.get(args[0].value);
+                }
+                if (list === undefined) {
+                    console.log("여기인가요?");
+                    connection.write(Buffer.from("*0\r\n"));
+                    return;
+                }
                 if (args[0] === undefined) {
                     connection.write(Buffer.from("*0\r\n"));
                     console.log('a');
@@ -128,38 +136,30 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     console.log('b');
                     return;
                 }
-                if (Number(args[1].value) > listSize) {
+                if (Number(args[1].value) > list.length) {
                     connection.write(Buffer.from("*0\r\n"));
                     console.log('c');
                     return;
                 }
-                if (Number(args[2].value) > listSize) {
-                    console.log(`a: ${Number(args[2].value)} listsize: ${listSize}`);
+                if (Number(args[2].value) > list.length) {
+                    console.log(`a: ${Number(args[2].value)} listsize: ${list.length}`);
                     connection.write(Buffer.from("*0\r\n"));
                     console.log('d');
                     return;
                 }
-                if (typeof args[0].value === "string" && arrayList.get(args[0].value) !== undefined) {
-                    console.log(`args[1].value = ${args[1].value}`);
-                    let word: string = "";
-                    word += "*";
-                    word += Number(args[2].value) - Number(args[1].value) + 1;
+                let word: string = "";
+                word += "*";
+                word += Number(args[2].value) - Number(args[1].value) + 1;
+                word += "\r\n";
+
+                for (let i = Number(args[1].value); i <= Number(args[2].value); i++) {
+                    word += "$";
+                    word += list[i].length;
                     word += "\r\n";
-                    const list = arrayList.get(args[0].value);
-                    if (list === undefined) {
-                        console.log("여기인가요?");
-                        connection.write(Buffer.from("*0\r\n"));
-                        return;
-                    }
-                    for (let i = Number(args[1].value); i <= Number(args[2].value); i++) {
-                        word += "$";
-                        word += list[i].length;
-                        word += "\r\n";
-                        word += list[i];
-                        word += "\r\n";
-                    }
-                    connection.write(Buffer.from(word));
+                    word += list[i];
+                    word += "\r\n";
                 }
+                connection.write(Buffer.from(word));
                 break;
             }
         }
