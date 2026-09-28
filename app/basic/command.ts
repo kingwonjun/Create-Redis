@@ -137,7 +137,6 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     connection.write(Buffer.from("*0\r\n"));
                     return;
                 }
-                console.log("여기까지 들어오나요?");
                 let word: string = "";
                 let end: number;
                 word += "*";
@@ -150,11 +149,13 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 }
                 word += "\r\n";
                 for (let i = Number(args[1].value); i <= end; i++) {
+                    console.log("여기까지 들어오나요?");
                     word += "$";
                     word += list[i].length;
                     word += "\r\n";
                     word += list[i];
                     word += "\r\n";
+                    console.log(`word : ${JSON.stringify(word)}`);
                 }
                 connection.write(Buffer.from(word));
                 break;
