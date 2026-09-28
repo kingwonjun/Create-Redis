@@ -195,8 +195,19 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 if (list == undefined) {
                     connection.write(Buffer.from("$-1\r\n"));
                     break;
+                } else if (args[1] === undefined || args[1].value !== "number") {
+                    connection.write(Buffer.from(`$${list[0].length}\r\n${list.shift()}\r\n`));
+                    break;
                 }
-                connection.write(Buffer.from(`$${list[0].length}\r\n${list.shift()}\r\n`));
+                if (typeof args[1].value === "string") {
+                    break;
+                }
+                if (typeof args[1].value === "number") {
+                    connection.write(Buffer.from(`*${args[1].value}\r\n`));
+                    for (let i = 0; i < args[1].value; i++) {
+                        connection.write(Buffer.from(`$${list[i].length}\r\n${list.shift()}\r\n`));
+                    }
+                }
                 break;
             }
         }
