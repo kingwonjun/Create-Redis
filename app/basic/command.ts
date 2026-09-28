@@ -93,7 +93,8 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
             case "rpush": {
                 const key = getString(args[0]);
                 const listSize = result.value.value.length;
-                for (let i = 1; i < listSize + 1; i++) {
+                console.log(`listSize: ${listSize}`);
+                for (let i = 1; i < listSize; i++) {
                     const value = getString(args[i]);
                     if (key !== null && value !== null) {
                         if (!arrayList.has(key)) {
