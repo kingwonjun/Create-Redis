@@ -189,15 +189,17 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
             }
             case "lpop" : {
                 if (args[0].value === undefined || args[0].type !== "BulkString") {
-                    console.log("1");
                     break;
                 }
+                console.log(`1`);
                 const list = arrayList.get(args[0].value);
+                console.log(`2`);
                 if (list == undefined) {
                     connection.write(Buffer.from("$-1\r\n"));
                     break;
                 }
                 if (typeof args[1].value === "string" && args[1].type === "Integer") {
+                    console.log(`3`);
                     let count : number = Number(args[1].value);
                     connection.write(Buffer.from(`*${args[1].value}\r\n`));
                     while(count > 0) {
