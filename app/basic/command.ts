@@ -144,7 +144,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 console.log("여기까지 들어오나요?");
                 let word: string = "";
                 word += "*";
-                word += Number(args[2].value) - Number(args[1].value) + 1;
+                word += (Number(args[2].value) - Number(args[1].value) + 1);
                 word += "\r\n";
 
                 for (let i = Number(args[1].value); i <= Number(args[2].value); i++) {
