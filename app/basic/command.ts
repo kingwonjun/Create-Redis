@@ -199,7 +199,10 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     connection.write(Buffer.from("$-1\r\n"));
                     break;
                 }
-                if (args[1].type === "BulkString") {
+                if (args[1] === undefined) {
+                    connection.write(Buffer.from(`*1\r\n$${list[0].length}\r\n${list.shift()}\r\n`));
+                }
+                else if (args[1].type === "BulkString") {
                     console.log(`4`);
                     let count: number = Number(args[1].value);
                     connection.write(Buffer.from(`*${args[1].value}\r\n`));
@@ -210,7 +213,6 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 }
                 break;
             }
-
         }
     }
 }
