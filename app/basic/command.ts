@@ -195,15 +195,9 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 if (list == undefined) {
                     connection.write(Buffer.from("$-1\r\n"));
                     break;
-                } else if (args[1] === undefined || args[1].type !== "Integer") {
-                    connection.write(Buffer.from(`$${list[0].length}\r\n${list.shift()}\r\n`));
-                    break;
-                }
-                if (typeof args[1].value === "string") {
-                    break;
                 }
                 if (typeof args[1].value === "string" && args[1].type === "Integer") {
-                    let count : number = args[1].value;
+                    let count : number = Number(args[1].value);
                     connection.write(Buffer.from(`*${args[1].value}\r\n`));
                     while(count > 0) {
                         connection.write(Buffer.from(`$${list[0].length}\r\n${list.shift()}\r\n`));
