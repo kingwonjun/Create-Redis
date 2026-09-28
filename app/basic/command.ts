@@ -91,8 +91,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 break;
             }
             case "rpush":
-            case "lpush":
-            {
+            case "lpush": {
                 const key = getString(args[0]);
                 const listSize = result.value.value.length;
 
@@ -120,8 +119,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 }
                 break;
             }
-            case "lrange":
-            {
+            case "lrange": {
                 let list: string[] | undefined;
                 if (typeof args[0].value === "string" && arrayList.get(args[0].value) !== undefined) {
                     list = arrayList.get(args[0].value);
@@ -176,6 +174,17 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 connection.write(Buffer.from(word));
                 console.log("확인");
                 break;
+            }
+            case "llen": {
+                let list: string[] | undefined;
+                if (typeof args[0].value === "string" && arrayList.get(args[0].value) !== undefined) {
+                    list = arrayList.get(args[0].value);
+                    if (list !== undefined) {
+                        connection.write(Buffer.from(`:${list.length}\r\n`))
+                    } else {
+                        connection.write(Buffer.from(":0\r\n"));
+                    }
+                } 
             }
         }
     }
