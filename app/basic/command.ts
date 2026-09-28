@@ -188,7 +188,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 break;
             }
             case "lpop" : {
-                if (args[0].value !== undefined) {
+                if (args[0].value === undefined || args[0].value !== "string") {
                     break;
                 }
                 const list = arrayList.get(args[0].value);
