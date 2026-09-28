@@ -129,38 +129,32 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     connection.write(Buffer.from("*0\r\n"));
                     return;
                 }
-                if (Number(args[1].value) > Number(args[2].value)) {
+                let start = Number(args[1].value);
+                let stop = Number(args[2].value);
+                if (start > stop) {
                     connection.write(Buffer.from("*0\r\n"));
                     return;
                 }
-                if (Number(args[1].value) > list.length) {
+                if (start > list.length) {
                     connection.write(Buffer.from("*0\r\n"));
                     return;
                 }
                 let word: string = "";
-                let end: number;
                 word += "*";
                 console.log(`word ${word}`);
-                if (list.length < Number(args[2].value)) {
-                    console.log(`list.length = ${list.length}`);
+                if (list.length < stop) {
                     word += list.length;
-                    console.log(`word ${word} a`);
-                    end = list.length - 1;
+                    stop = list.length - 1;
                 } else {
-                    word += (Number(args[2].value) - Number(args[1].value) + 1);
-                    console.log(`word ${word} b`);
-                    end = Number(args[2].value);
+                    word += (stop - start + 1);
                 }
                 word += "\r\n";
-                console.log(`word ${word} c`);
-                console.log(`end : ${end}`);
-                for (let i = Number(args[1].value); i <= end; i++) {
+                for (let i = start; i <= stop; i++) {
                     word += "$";
                     word += list[i].length;
                     word += "\r\n";
                     word += list[i];
                     word += "\r\n";
-                    // console.log(`word : ${JSON.stringify(word)}`);
                 }
                 connection.write(Buffer.from(word));
                 console.log("확인");
