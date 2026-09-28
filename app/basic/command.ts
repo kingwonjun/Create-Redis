@@ -146,6 +146,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     word += "\r\n";
                     const list = arrayList.get(args[0].value);
                     if (list === undefined) {
+                        console.log("여기인가요?");
                         connection.write(Buffer.from("*0\r\n"));
                         return;
                     }
