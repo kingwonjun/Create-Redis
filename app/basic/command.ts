@@ -108,7 +108,9 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                         }
                     }
                 }
-                console.log(list);
+                if (typeof key === "string") {
+                    console.log(arrayList.get(key));
+                }
                 let listLength: string[] | undefined ;
                 if (key !== null) {
                     listLength = arrayList.get(key);
