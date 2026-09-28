@@ -134,6 +134,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     return;
                 }
                 if (Number(args[2].value) > listSize) {
+                    console.log(`listsize: ${listSize}`);
                     connection.write(Buffer.from("*0\r\n"));
                     console.log('d');
                     return;
