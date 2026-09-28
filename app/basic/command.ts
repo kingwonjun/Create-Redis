@@ -151,7 +151,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     end = Number(args[2].value);
                 }
                 word += "\r\n";
-                console.log(`word ${word}` c);
+                console.log(`word ${word} c`);
                 console.log(`end : ${end}`);
                 for (let i = Number(args[1].value); i < end; i++) {
                     word += "$";
