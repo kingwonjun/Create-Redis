@@ -96,6 +96,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 console.log(`listSize: ${listSize}`);
                 for (let i = 1; i < listSize; i++) {
                     const value = getString(args[i]);
+                    console.log(`value: ${value}`);
                     if (key !== null && value !== null) {
                         if (!arrayList.has(key)) {
                             arrayList.set(key, [value]);
