@@ -40,7 +40,7 @@ const getString = (value: RespValue): string | null => {
     return null;
 }
 
-export const handleCommand = (result: ParseResult, connection: net.Socket, store: Map<string, StoreValue>, arrayList: Map<string, string[]>): void => {
+export const handleCommand = (result: ParseResult, connection: net.Socket, store: Map<string, StoreValue>, arrayList: Map<string, string[]>, blockedClients: Map<string, net.Socket[]>): void => {
 
     if (result.value.type === "Array" && result.value.value[0].type === "BulkString") {
         const [command, ...args] = result.value.value;
@@ -191,11 +191,8 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 if (args[0].value === undefined || args[0].type !== "BulkString") {
                     break;
                 }
-                console.log(`1`);
                 const list = arrayList.get(args[0].value);
-                console.log(`2`);
                 if (list == undefined) {
-                    console.log('3');
                     connection.write(Buffer.from("$-1\r\n"));
                     break;
                 }
@@ -203,7 +200,6 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     connection.write(Buffer.from(`$${list[0].length}\r\n${list.shift()}\r\n`));
                 }
                 else if (args[1].type === "BulkString") {
-                    console.log(`4`);
                     let count: number = Number(args[1].value);
                     connection.write(Buffer.from(`*${args[1].value}\r\n`));
                     while (count > 0) {
@@ -212,6 +208,12 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     }
                 }
                 break;
+            }
+            case "blpop" : {
+                if (args[0].value === undefined || args[0].type !== "BulkString") {
+                    break;
+                }
+                
             }
         }
     }

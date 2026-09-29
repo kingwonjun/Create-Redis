@@ -4,6 +4,7 @@ import {handleCommand} from "./basic/command.ts";
 import type {StoreValue} from "./basic/resp.ts";
 
 const server: net.Server = net.createServer((connection: net.Socket) => {
+    const blockedClients = new Map<string, net.Socket[]>;
     const store = new Map<string, StoreValue>;
     const arrayList = new Map<string, string[]>;
     connection.on("data", (data: Buffer) => {
@@ -12,7 +13,7 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
             return;
         }
         if (result.value.type === "Array") {
-            handleCommand(result, connection, store, arrayList);
+            handleCommand(result, connection, store, arrayList, blockedClients);
         }
     });
 });
