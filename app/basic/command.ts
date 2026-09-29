@@ -249,6 +249,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 }, Number(args[1].value) * 1000);
 
                 if (args[1].value === "0") {
+                    console.log("여기야");
                     BlockedClientArray.push({connection, timer: undefined});
                 } else {
                     BlockedClientArray.push({connection, timer});
