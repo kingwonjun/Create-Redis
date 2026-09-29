@@ -239,6 +239,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                         const index = clientList.findIndex((conn) => conn.connection === connection);
                         clientList.splice(index, 1);
                     }
+                    console.log("여기야?");
                     connection.write(Buffer.from("*-1\r\n"));
                 }, Number(args[1].value) * 1000);
 
