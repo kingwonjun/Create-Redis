@@ -243,7 +243,6 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 }, Number(args[1].value) * 1000);
 
                 if (args[1].value === "0") {
-                    console.log("여기야");
                     BlockedClientArray.push({connection, timer: undefined});
                 } else {
                     BlockedClientArray.push({connection, timer});
@@ -255,7 +254,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 }
                 if (list.length > 0) {
                     BlockedClientArray.shift();
-                    connection.write(Buffer.from(`*2\r\n$${key.length}\r\n${key}\r\n$${list[0].length}\r\n${list.shift()}`));
+                    connection.write(Buffer.from(`*2\r\n$${key.length}\r\n${key}\r\n$${list[0].length}\r\n${list.shift()}\r\n`));
                 }
                 break;
             }
