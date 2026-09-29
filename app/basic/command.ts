@@ -239,7 +239,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                         const index = clientList.findIndex((conn) => conn.connection === connection);
                         clientList.splice(index, 1);
                     }
-                    connection.write(Buffer.from("$-1\r\n"));
+                    connection.write(Buffer.from("*-1\r\n"));
                 }, Number(args[1].value) * 1000);
 
                 if (args[1].value === "0") {
