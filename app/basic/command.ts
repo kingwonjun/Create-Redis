@@ -233,20 +233,19 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 if (args[1].value === undefined || args[1].type !== "BulkString") {
                     break;
                 }
-                const timer = setTimeout(() => {
-                    const clientList = blockedClients.get(key);
-                    if (clientList !== undefined) {
-                        const index = clientList.findIndex((conn) => conn.connection === connection);
-                        clientList.splice(index, 1);
-                    }
-                    console.log("여기야?");
-                    connection.write(Buffer.from("*-1\r\n"));
-                }, Number(args[1].value) * 1000);
+
 
                 if (args[1].value === "0") {
-                    console.log("heyhey");
                     BlockedClientArray.push({connection, timer: undefined});
                 } else {
+                    const timer = setTimeout(() => {
+                        const clientList = blockedClients.get(key);
+                        if (clientList !== undefined) {
+                            const index = clientList.findIndex((conn) => conn.connection === connection);
+                            clientList.splice(index, 1);
+                        }
+                        connection.write(Buffer.from("*-1\r\n"));
+                    }, Number(args[1].value) * 1000);
                     BlockedClientArray.push({connection, timer});
                 }
                 blockedClients.set(key, BlockedClientArray);
