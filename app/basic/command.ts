@@ -260,11 +260,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 break;
             }
             case "type": {
-                const type = args[0].value;
-                if (typeof type !== "string" || args[0].type !== "BulkString") {
-                    break;
-                }
-                if (args[1].type === "SimpleString") {
+                if (args[0].type === "SimpleString") {
                     connection.write(Buffer.from("+string\r\n"));
                 } else {
                     connection.write(Buffer.from("+none\r\n"));
