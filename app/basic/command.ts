@@ -132,7 +132,6 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     console.log("d");
                     const otherConnection = BlockedClientArray.shift();
                     console.log("e");
-                    console.log(BlockedClientArray);
                     console.log(BlockedClientArray.length);
                     if (otherConnection !== undefined) {
                         console.log("f");
