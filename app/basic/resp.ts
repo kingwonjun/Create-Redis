@@ -1,3 +1,5 @@
+import net from "net";
+
 type RespSimpleString = {
     type: "SimpleString";
     value: string;
@@ -38,4 +40,9 @@ export type ParseResult = {
 export type StoreValue = {
     value: string;
     expiresAt: number | null;
+}
+
+export type BlockedClient = {
+    connection: net.Socket;
+    timer: NodeJS.Timeout | undefined;
 }

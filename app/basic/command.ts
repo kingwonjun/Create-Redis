@@ -1,5 +1,5 @@
 import net from "net";
-import type {ParseResult, RespValue, StoreValue} from "./resp.ts";
+import type {BlockedClient, ParseResult, RespValue, StoreValue} from "./resp.ts";
 
 const encodeResp = (value: RespValue | StoreValue | string): string => {
 
@@ -40,7 +40,7 @@ const getString = (value: RespValue): string | null => {
     return null;
 }
 
-export const handleCommand = (result: ParseResult, connection: net.Socket, store: Map<string, StoreValue>, arrayList: Map<string, string[]>, blockedClients: Map<string, net.Socket[]>): void => {
+export const handleCommand = (result: ParseResult, connection: net.Socket, store: Map<string, StoreValue>, arrayList: Map<string, string[]>, blockedClients: Map<string, BlockedClient[]>, BlockedClientArray: BlockedClient[]): void => {
 
     if (result.value.type === "Array" && result.value.value[0].type === "BulkString") {
         const [command, ...args] = result.value.value;
@@ -72,6 +72,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                         store.set(key, {value: valueString, expiresAt: null});
                     } else if (px === "px" && typeof expiresAt === "number") {
                         connection.write(Buffer.from("+OK\r\n"));
+                        // PX는 현재 시각에 만료 시간을 더해 절대 시각으로 저장한다.
                         store.set(key, {value: valueString, expiresAt: Date.now() + expiresAt});
                     }
                 }
@@ -132,8 +133,10 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     connection.write(Buffer.from("*0\r\n"));
                     return;
                 }
+                // LRANGE의 start와 stop은 모두 결과에 포함되는 인덱스다.
                 let start = Number(args[1].value);
                 let stop = Number(args[2].value);
+                // 음수 인덱스는 리스트의 끝을 기준으로 계산한다.
                 if (start < 0) {
                     start = list.length + start;
                 }
@@ -198,8 +201,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 }
                 if (args[1] === undefined) {
                     connection.write(Buffer.from(`$${list[0].length}\r\n${list.shift()}\r\n`));
-                }
-                else if (args[1].type === "BulkString") {
+                } else if (args[1].type === "BulkString") {
                     let count: number = Number(args[1].value);
                     connection.write(Buffer.from(`*${args[1].value}\r\n`));
                     while (count > 0) {
@@ -210,10 +212,36 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 break;
             }
             case "blpop" : {
-                if (args[0].value === undefined || args[0].type !== "BulkString") {
+                const key = args[0].value;
+                if (typeof key !== "string" || args[0].type !== "BulkString") {
                     break;
                 }
-                
+                if (args[1].value === undefined || args[1].type !== "BulkString") {
+                    break;
+                }
+                const timer = setTimeout(() => {
+                    const clientList = blockedClients.get(key);
+                    if (clientList !== undefined) {
+                        const index = clientList.findIndex((conn) => conn.connection === connection);
+                        clientList.splice(index, 1);
+                    }
+                }, Number(args[1].value) * 1000);
+
+                if (args[1].value === "0") {
+                    BlockedClientArray.push({connection, timer: undefined});
+                } else {
+                    BlockedClientArray.push({connection, timer});
+                }
+                blockedClients.set(key, BlockedClientArray);
+                const list = arrayList.get(key);
+                if (list === undefined) {
+                    break;
+                }
+                if (list.length > 0) {
+                    BlockedClientArray.shift();
+                    connection.write(Buffer.from(`*2\r\n$${key.length}\r\n${key}\r\n$${list[0].length}\r\n${list.shift()}`));
+                }
+                break;
             }
         }
     }
