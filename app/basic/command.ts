@@ -96,9 +96,12 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 const key = getString(args[0]);
                 const listSize = result.value.value.length;
 
+                if (key === null) {
+                    break;
+                }
                 for (let i = 1; i < listSize - 1; i++) {
                     const value = getString(args[i]);
-                    if (key !== null && value !== null) {
+                    if (value !== null) {
                         if (!arrayList.has(key)) {
                             arrayList.set(key, [value]);
                         } else {
@@ -112,10 +115,21 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     }
                 }
                 let listLength: string[] | undefined;
-                if (key !== null) {
-                    listLength = arrayList.get(key);
-                    if (listLength !== undefined) {
-                        connection.write(`:${listLength.length}\r\n`);
+                listLength = arrayList.get(key);
+                if (listLength !== undefined) {
+                    connection.write(`:${listLength.length}\r\n`);
+                }
+
+
+                // blpop으로 lpush와 rpush가 된 상태에서 로직을 추가
+                const list = arrayList.get(key);
+                if (list === undefined) {
+                    break;
+                }
+                if (list.length > 0) {
+                    const otherConnection = BlockedClientArray.shift();
+                    if (otherConnection !== undefined) {
+                        otherConnection.connection.write(Buffer.from(`*2\r\n$${key.length}\r\n${key}\r\n$${list[0].length}\r\n${list.shift()}`));
                     }
                 }
                 break;
