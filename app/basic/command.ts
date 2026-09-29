@@ -120,7 +120,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     connection.write(`:${listLength.length}\r\n`);
                 }
 
-
+                console.log("a");
                 // blpop으로 lpush와 rpush가 된 상태에서 로직을 추가
                 const list = arrayList.get(key);
                 if (list === undefined) {
