@@ -312,7 +312,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                         break;
                     }
 
-                    if (startId === startIdToCompare && endId === "*") {
+                    if (endId === "*") {
                         id = String(startId).concat("-").concat(String(endIdToCompare + 1));
                     }
                 }
