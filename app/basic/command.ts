@@ -288,30 +288,30 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     break;
                 }
 
-                const startId = id.slice(0, id.indexOf('-'));
-                const endId = id.slice(id.indexOf('-') + 1);
+                const startId = Number(id.slice(0, id.indexOf('-')));
+                const endId = Number(id.slice(id.indexOf('-') + 1));
                 // 자동 시퀸스 번호 코드
-                if (streamIdChecker === undefined && startId === "0" && endId === "*") {
-                    id = startId.concat("-").concat("1");
-                } else if (streamIdChecker === undefined && endId === "*") {
-                    id = startId.concat("-").concat("0");
+                if (streamIdChecker === undefined && startId === 0 && endId === 42) {
+                    id = String(startId).concat("-").concat("1");
+                } else if (streamIdChecker === undefined && endId === 42) {
+                    id = String(startId).concat("-").concat("0");
                 }
                 if (streamIdChecker !== undefined) {
-                    const startIdToCompare = streamIdChecker[0].id.slice(0, id.indexOf('-'));
-                    const endIdToCompare = streamIdChecker[0].id.slice(id.indexOf('-') + 1);
+                    const startIdToCompare = Number(streamIdChecker[0].id.slice(0, id.indexOf('-')));
+                    const endIdToCompare = Number(streamIdChecker[0].id.slice(id.indexOf('-') + 1));
 
                     console.log(`startIdToCompare: ${startIdToCompare}`);
                     console.log(`endIdToCompare: ${endIdToCompare}`);
                     console.log(`startId: ${startId}`);
                     console.log(`endId: ${endId}`);
 
-                    if (endId !== "*" && (startId < startIdToCompare || endId <= endIdToCompare)) {
+                    if (endId !== 42 && (startId < startIdToCompare || endId <= endIdToCompare)) {
                         connection.write('-ERR The ID specified in XADD is equal or smaller than the target stream top item\r\n');
                         break;
                     }
 
-                    if (startId === startIdToCompare && endId === "*") {
-                        id = startId.concat("-").concat(endIdToCompare + 1);
+                    if (startId === startIdToCompare && endId === 42) {
+                        id = String(startId).concat("-").concat(String(endIdToCompare + 1));
                     }
                 }
 
