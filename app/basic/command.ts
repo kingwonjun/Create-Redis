@@ -311,8 +311,10 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                         connection.write('-ERR The ID specified in XADD is equal or smaller than the target stream top item\r\n');
                         break;
                     }
-
-                    if (endId === "*") {
+                    if (startId !== startIdToCompare && endId === "*") {
+                        id = String(startId).concat("-").concat("0");
+                    }
+                    if (startId === startIdToCompare && endId === "*") {
                         id = String(startId).concat("-").concat(String(endIdToCompare + 1));
                     }
                 }
