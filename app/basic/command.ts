@@ -294,7 +294,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     const startIdToCompare = streamIdChecker[0].id.slice(0, id.indexOf('-'));
                     console.log('e');
                     const endIdToCompare = streamIdChecker[1].id.slice(id.indexOf('-'));
-                    console.log('f);
+                    console.log('f');
 
                     if (startId < startIdToCompare || endId < endIdToCompare) {
                         console.log('g');
