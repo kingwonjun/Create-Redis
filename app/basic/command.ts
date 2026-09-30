@@ -305,7 +305,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     console.log('h');
                     if (Number(id[id.length - 1]) <= 0) {
                         console.log('i');
-                        connection.write('-ERR The ID specified in XADD is equal or smaller than the target stream top item\r\n');
+                        connection.write('-ERR The ID specified in XADD must be greater than 0-0\r\n');
                         break;
                     }
                 }
