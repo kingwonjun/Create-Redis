@@ -290,16 +290,20 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
 
                 const startId = id.slice(0, id.indexOf('-'));
                 const endId = id.slice(id.indexOf('-'));
-
+                console.log('a');
                 // 자동 시퀸스 번호 코드
                 if (streamIdChecker === undefined && startId === "0" && endId === "*") {
                     id = startId.concat("-").concat("1");
+                    console.log('b');
                 }
                 else if (streamIdChecker === undefined && endId === "*"){
                     id = startId.concat("-").concat("0");
+                    console.log('c');
                 }
-
+                console.log('d');
                 if (streamIdChecker !== undefined) {
+                    console.log('e');
+
                     const startIdToCompare = streamIdChecker[0].id.slice(0, id.indexOf('-'));
                     const endIdToCompare = streamIdChecker[0].id.slice(id.indexOf('-'));
 
