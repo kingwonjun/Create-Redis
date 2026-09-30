@@ -283,24 +283,33 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     break;
                 }
                 const streamIdChecker = streamList.get(key);
+                console.log('a');
                 if (streamIdChecker !== undefined) {
+                    console.log('b');
                     const startId = id.slice(0, id.indexOf('-'))
+                    console.log('c');
                     const endId = id.slice(id.indexOf('-'));
+                    console.log('d');
 
                     const startIdToCompare = streamIdChecker[0].id.slice(0, id.indexOf('-'));
+                    console.log('e');
                     const endIdToCompare = streamIdChecker[1].id.slice(id.indexOf('-'));
+                    console.log('f);
 
                     if (startId < startIdToCompare || endId < endIdToCompare) {
+                        console.log('g');
                         connection.write('-ERR The ID specified in XADD is equal or smaller than the target stream top item\r\n');
                         break;
                     }
                 } else {
+                    console.log('h');
                     if (Number(id[id.length - 1]) <= 0) {
+                        console.log('i');
                         connection.write('-ERR The ID specified in XADD is equal or smaller than the target stream top item\r\n');
                         break;
                     }
                 }
-                console.log("a");
+
                 for (let i = 2; i < [command, ...args].length - 3; i += 2) {
                     // i가 2부터 시작하니까 인덱스 0으로 맞추기위해 -2함
                     const keyValue1 = args[i].value;
@@ -310,17 +319,12 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     }
                     streamArray.push({streamKey: keyValue1, streamValue: keyValue2});
                 }
-                console.log("b");
                 streamList.set(key, []);
-                console.log("c");
                 const keyIdList = streamList.get(key);
-                console.log("d");
                 if (keyIdList === undefined) {
-                    console.log("a");
                     break;
                 }
                 keyIdList.push({id, fields: streamArray});
-                console.log("e");
                 connection.write(`$${id.length}\r\n${id}\r\n`);
                 break;
             }
