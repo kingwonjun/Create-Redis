@@ -289,7 +289,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 }
 
                 const startId = Number(id.slice(0, id.indexOf('-')));
-                const endId = Number(id.slice(id.indexOf('-') + 1));
+                const endId = Number(id.slice(id.indexOf('-')) + 1);
                 // 자동 시퀸스 번호 코드
                 console.log(`startId = ${startId}`);
                 console.log(`endId = ${endId}`);
@@ -300,7 +300,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 }
                 if (streamIdChecker !== undefined) {
                     const startIdToCompare = Number(streamIdChecker[0].id.slice(0, id.indexOf('-')));
-                    const endIdToCompare = Number(streamIdChecker[0].id.slice(id.indexOf('-') + 1));
+                    const endIdToCompare = Number(streamIdChecker[0].id.slice(id.indexOf('-')) + 1);
 
                     console.log(`startIdToCompare: ${startIdToCompare}`);
                     console.log(`endIdToCompare: ${endIdToCompare}`);
