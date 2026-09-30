@@ -40,7 +40,7 @@ const getString = (value: RespValue): string | null => {
     return null;
 }
 
-export const handleCommand = (result: ParseResult, connection: net.Socket, store: Map<string, StoreValue>, arrayList: Map<string, string[]>, blockedClients: Map<string, BlockedClient[]>, BlockedClientArray: BlockedClient[], streamList: Map<string, StreamEntry>, streamArray: StreamKeyValue[]): void => {
+export const handleCommand = (result: ParseResult, connection: net.Socket, store: Map<string, StoreValue>, arrayList: Map<string, string[]>, blockedClients: Map<string, BlockedClient[]>, BlockedClientArray: BlockedClient[], streamList: Map<string, StreamEntry[]>, streamArray: StreamKeyValue[]): void => {
 
     if (result.value.type === "Array" && result.value.value[0].type === "BulkString") {
         const [command, ...args] = result.value.value;
@@ -282,7 +282,25 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 if (typeof id !== "string") {
                     break;
                 }
-                // command ..args의 길이값을 -1 -2 command 와 arg[0] arg[1] 제외 해야되는지 조사 필요
+                const streamIdChecker = streamList.get(key);
+                if (streamIdChecker !== undefined) {
+                    const startId = id.slice(0, id.indexOf('-'))
+                    const endId = id.slice(id.indexOf('-'));
+
+                    const startIdToCompare = streamIdChecker[0].id.slice(0, id.indexOf('-'));
+                    const endIdToCompare = streamIdChecker[1].id.slice(id.indexOf('-'));
+
+                    if (startId < startIdToCompare || endId < endIdToCompare) {
+                        connection.write('-ERR The ID specified in XADD is equal or smaller than the target stream top item\r\n');
+                        break;
+                    }
+                } else {
+                    if (Number(id[id.length - 1]) <= 0) {
+                        connection.write('-ERR The ID specified in XADD is equal or smaller than the target stream top item\r\n');
+                        break;
+                    }
+                }
+
                 for (let i = 2; i < [command, ...args].length - 3; i += 2) {
                     // i가 2부터 시작하니까 인덱스 0으로 맞추기위해 -2함
                     const keyValue1 = args[i].value;
@@ -292,7 +310,12 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     }
                     streamArray.push({streamKey: keyValue1, streamValue: keyValue2});
                 }
-                streamList.set(key, {id, fields: streamArray});
+                streamList.set(key, []);
+                const keyIdList = streamList.get(key);
+                if (keyIdList === undefined) {
+                    break;
+                }
+                keyIdList.push({id, fields: streamArray});
                 connection.write(`$${id.length}\r\n${id}\r\n`);
                 break;
             }
