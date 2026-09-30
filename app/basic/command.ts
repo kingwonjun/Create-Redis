@@ -297,7 +297,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     finalValue = String(autoValueStartId).concat("-").concat(String(autoValueEndId));
                     id = finalValue;
                 } else if (id === "*"){
-                    finalValue = String(Date.now).concat("-").concat("0");
+                    finalValue = String(Date.now()).concat("-").concat("0");
                     id = finalValue;
                 }
                 console.log(1);
