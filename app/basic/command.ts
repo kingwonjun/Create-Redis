@@ -283,7 +283,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 }
                 const streamIdChecker = streamList.get(key);
 
-                let finalValue: string;
+                let finalValue: string | undefined;
                 if (streamIdChecker !== undefined && id === "*") {
                     const nearId = streamIdChecker[0].id;
                     const autoValueStartIdToCompare = Number(nearId.slice(0, id.indexOf('-')));
@@ -297,9 +297,11 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     finalValue = String(autoValueStartId).concat("-").concat(String(autoValueEndId));
                     id = finalValue;
                 } else if (id === "*"){
-                    id = String(Date.now).concat("-").concat("0");
+                    finalValue = String(Date.now).concat("-").concat("0");
+                    id = finalValue;
                 }
-                if (id !== "*") {
+                // finalvalue -> id로 옮겨담고 후에 나올 로직을 위해 if(finalValue === uyndefined)이 나을까 finalValue ==  null 이 나을까 고민이 된다.;
+                if (finalValue === undefined) {
                     if (Number(id[id.length - 1]) <= 0) {
                         connection.write('-ERR The ID specified in XADD must be greater than 0-0\r\n');
                         break;
