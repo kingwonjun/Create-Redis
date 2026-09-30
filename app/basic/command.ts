@@ -273,6 +273,10 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 }
                 break;
             }
+            case "XADD": {
+                
+                break;
+            }
         }
     }
 }
