@@ -296,7 +296,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     const endIdToCompare = streamIdChecker[0].id.slice(id.indexOf('-'));
                     console.log('f');
 
-                    if (startId <= startIdToCompare || endId <= endIdToCompare) {
+                    if (startId < startIdToCompare || endId <= endIdToCompare) {
                         console.log('g');
                         connection.write('-ERR The ID specified in XADD is equal or smaller than the target stream top item\r\n');
                         break;
