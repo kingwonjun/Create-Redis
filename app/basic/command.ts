@@ -265,8 +265,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 const value = store.get(key);
                 if (streamList.has(key)) {
                     connection.write(Buffer.from("+stream\r\n"));
-                }
-                else if (typeof value === "object" && typeof value.value === "string") {
+                } else if (typeof value === "object" && typeof value.value === "string") {
                     connection.write(Buffer.from("+string\r\n"));
                 } else {
                     connection.write(Buffer.from("+none\r\n"));
@@ -284,28 +283,19 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 }
                 const streamIdChecker = streamList.get(key);
                 console.log('a');
+                if (Number(id[id.length - 1]) <= 0) {
+                    connection.write('-ERR The ID specified in XADD must be greater than 0-0\r\n');
+                    break;
+                }
                 if (streamIdChecker !== undefined) {
-                    console.log('b');
                     const startId = id.slice(0, id.indexOf('-'))
-                    console.log('c');
                     const endId = id.slice(id.indexOf('-'));
-                    console.log('d');
 
                     const startIdToCompare = streamIdChecker[0].id.slice(0, id.indexOf('-'));
-                    console.log('e');
                     const endIdToCompare = streamIdChecker[0].id.slice(id.indexOf('-'));
-                    console.log('f');
 
                     if (startId < startIdToCompare || endId <= endIdToCompare) {
-                        console.log('g');
                         connection.write('-ERR The ID specified in XADD is equal or smaller than the target stream top item\r\n');
-                        break;
-                    }
-                } else {
-                    console.log('h');
-                    if (Number(id[id.length - 1]) <= 0) {
-                        console.log('i');
-                        connection.write('-ERR The ID specified in XADD must be greater than 0-0\r\n');
                         break;
                     }
                 }
