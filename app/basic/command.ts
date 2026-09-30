@@ -282,6 +282,8 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     break;
                 }
                 const streamIdChecker = streamList.get(key);
+
+                let finalValue: string;
                 if (streamIdChecker !== undefined && id === "*") {
                     const nearId = streamIdChecker[0].id;
                     const autoValueStartIdToCompare = Number(nearId.slice(0, id.indexOf('-')));
@@ -292,8 +294,10 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     if (autoValueStartId === autoValueStartIdToCompare) {
                         autoValueEndId = Number(autoValueEndIdToCompare) + 1;
                     }
-                    const finalValue = String(autoValueStartId).concat("-").concat(String(autoValueEndId));
-                    connection.write(Buffer.from(`$${finalValue.length}\r\n${finalValue}\r\n`));
+                    finalValue = String(autoValueStartId).concat("-").concat(String(autoValueEndId));
+                    id = finalValue;
+                } else if (id === "*"){
+                    id = String(Date.now).concat("-").concat("0");
                 }
                 if (id !== "*") {
                     if (Number(id[id.length - 1]) <= 0) {
