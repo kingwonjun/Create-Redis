@@ -289,13 +289,13 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 }
 
                 const startId = Number(id.slice(0, id.indexOf('-')));
-                const endId = Number(id.slice(id.indexOf('-')) + 1);
+                const endId = id.slice(id.indexOf('-') + 1);
                 // 자동 시퀸스 번호 코드
                 console.log(`startId = ${startId}`);
                 console.log(`endId = ${endId}`);
-                if (streamIdChecker === undefined && startId === 0 && endId === 42) {
+                if (streamIdChecker === undefined && startId === 0 && endId === "*") {
                     id = String(startId).concat("-").concat("1");
-                } else if (streamIdChecker === undefined && endId === 42) {
+                } else if (streamIdChecker === undefined && endId === "*") {
                     id = String(startId).concat("-").concat("0");
                 }
                 if (streamIdChecker !== undefined) {
@@ -307,12 +307,12 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     console.log(`startId: ${startId}`);
                     console.log(`endId: ${endId}`);
 
-                    if (endId !== 42 && (startId < startIdToCompare || endId <= endIdToCompare)) {
+                    if (endId !== "*" && (startId < startIdToCompare || Number(endId) <= endIdToCompare)) {
                         connection.write('-ERR The ID specified in XADD is equal or smaller than the target stream top item\r\n');
                         break;
                     }
 
-                    if (startId === startIdToCompare && endId === 42) {
+                    if (startId === startIdToCompare && endId === "*") {
                         id = String(startId).concat("-").concat(String(endIdToCompare + 1));
                     }
                 }
