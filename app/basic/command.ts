@@ -283,7 +283,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     break;
                 }
                 // command ..args의 길이값을 -1 -2 command 와 arg[0] arg[1] 제외 해야되는지 조사 필요
-                for (let i = 2; i < [command, ...args].length - 3; i += 2) {
+                for (let i = 3; i < [command, ...args].length - 3; i += 2) {
                     // i가 2부터 시작하니까 인덱스 0으로 맞추기위해 -2함
                     const keyValue1 = args[i].value;
                     const keyValue2 = args[i + 1].value;
