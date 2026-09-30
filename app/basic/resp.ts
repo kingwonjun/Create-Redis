@@ -46,3 +46,13 @@ export type BlockedClient = {
     connection: net.Socket;
     timer: NodeJS.Timeout | undefined;
 }
+
+export type StreamKeyValue = {
+    streamKey: string;
+    streamValue: string;
+}
+
+export type StreamEntry = {
+    id: string;
+    fields: StreamKeyValue[];
+}

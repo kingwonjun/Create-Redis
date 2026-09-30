@@ -1,5 +1,5 @@
 import net from "net";
-import type {BlockedClient, ParseResult, RespValue, StoreValue} from "./resp.ts";
+import type {BlockedClient, ParseResult, RespValue, StoreValue, StreamEntry, StreamKeyValue} from "./resp.ts";
 
 const encodeResp = (value: RespValue | StoreValue | string): string => {
 
@@ -40,7 +40,7 @@ const getString = (value: RespValue): string | null => {
     return null;
 }
 
-export const handleCommand = (result: ParseResult, connection: net.Socket, store: Map<string, StoreValue>, arrayList: Map<string, string[]>, blockedClients: Map<string, BlockedClient[]>, BlockedClientArray: BlockedClient[]): void => {
+export const handleCommand = (result: ParseResult, connection: net.Socket, store: Map<string, StoreValue>, arrayList: Map<string, string[]>, blockedClients: Map<string, BlockedClient[]>, BlockedClientArray: BlockedClient[], streamList: Map<string, StreamEntry>, streamArray: StreamKeyValue[]): void => {
 
     if (result.value.type === "Array" && result.value.value[0].type === "BulkString") {
         const [command, ...args] = result.value.value;
@@ -233,8 +233,6 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 if (args[1].value === undefined || args[1].type !== "BulkString") {
                     break;
                 }
-
-
                 if (args[1].value === "0") {
                     BlockedClientArray.push({connection, timer: undefined});
                 } else {
@@ -265,16 +263,38 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     break;
                 }
                 const value = store.get(key);
-                if (value !== undefined) {
-                    connection.write(Buffer.from("+string\r\n"));
+                if (streamList.has(key)) {
+                    connection.write(Buffer.from("+stream\r\n"));
                 }
-                else {
+                else if (typeof value === "object" && typeof value.value === "string") {
+                    connection.write(Buffer.from("+string\r\n"));
+                } else {
                     connection.write(Buffer.from("+none\r\n"));
                 }
                 break;
             }
             case "XADD": {
-                
+                const key = args[0].value;
+                if (typeof key !== "string" || args[0].type !== "BulkString") {
+                    break;
+                }
+                const id = args[1].value;
+                if (typeof id !== "string") {
+                    break;
+                }
+                // command ..args의 길이값을 -1 -2 command 와 arg[0] arg[1] 제외 해야되는지 조사 필요
+                for (let i = 2; i < [command, ...args].length - 3; i += 2) {
+                    // i가 2부터 시작하니까 인덱스 0으로 맞추기위해 -2함
+                    const keyValue1 = args[i].value;
+                    const keyValue2 = args[i + 1].value;
+                    if (typeof keyValue1 !== "string" || typeof keyValue2 !== "string") {
+                        break;
+                    }
+                    streamArray.push({streamKey: keyValue1, streamValue: keyValue2});
+                }
+
+                streamList.set(key, {id, fields: streamArray});
+                connection.write(`$${id.length}\r\n${id}\r\n`);
                 break;
             }
         }
