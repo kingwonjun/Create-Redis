@@ -265,8 +265,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     break;
                 }
                 const value = store.get(key);
-                console.log(typeof value);
-                if (1) {
+                if (value !== undefined) {
                     connection.write(Buffer.from("+string\r\n"));
                 }
                 else {
