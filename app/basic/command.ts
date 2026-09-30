@@ -261,11 +261,12 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
             }
             case "type": {
                 const key = args[0].value;
-                if (typeof key !== "string") {
-                    connection.write(Buffer.from("+none\r\n"));
+                if (typeof key === "object") {
                     break;
                 }
-                if (typeof store.get(key) === "string") {
+                const value = store.get(key);
+                console.log(typeof value);
+                if (1) {
                     connection.write(Buffer.from("+string\r\n"));
                 }
                 else {
