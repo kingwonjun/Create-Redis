@@ -277,26 +277,39 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 if (typeof key !== "string" || args[0].type !== "BulkString") {
                     break;
                 }
-                const id = args[1].value;
+                let id = args[1].value;
                 if (typeof id !== "string") {
                     break;
                 }
                 const streamIdChecker = streamList.get(key);
-                console.log('a');
+
                 if (Number(id[id.length - 1]) <= 0) {
                     connection.write('-ERR The ID specified in XADD must be greater than 0-0\r\n');
                     break;
                 }
-                if (streamIdChecker !== undefined) {
-                    const startId = id.slice(0, id.indexOf('-'))
-                    const endId = id.slice(id.indexOf('-'));
 
+                const startId = id.slice(0, id.indexOf('-'));
+                const endId = id.slice(id.indexOf('-'));
+
+                // 자동 시퀸스 번호 코드
+                if (streamIdChecker === undefined && startId === "0" && endId === "*") {
+                    id = startId.concat("-").concat("1");
+                }
+                else if (streamIdChecker === undefined && endId === "*"){
+                    id = startId.concat("-").concat("0");
+                }
+
+                if (streamIdChecker !== undefined) {
                     const startIdToCompare = streamIdChecker[0].id.slice(0, id.indexOf('-'));
                     const endIdToCompare = streamIdChecker[0].id.slice(id.indexOf('-'));
 
                     if (startId < startIdToCompare || endId <= endIdToCompare) {
                         connection.write('-ERR The ID specified in XADD is equal or smaller than the target stream top item\r\n');
                         break;
+                    }
+
+                    if (startId === startIdToCompare && endId === "*") {
+                        id = startId.concat("-").concat(endIdToCompare + 1);
                     }
                 }
 
@@ -314,7 +327,8 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 if (keyIdList === undefined) {
                     break;
                 }
-                keyIdList.push({id, fields: streamArray});
+                // 이거는 방금전에 내가 바꿨다. 조심해야됨
+                keyIdList.unshift({id, fields: streamArray});
                 connection.write(`$${id.length}\r\n${id}\r\n`);
                 break;
             }
