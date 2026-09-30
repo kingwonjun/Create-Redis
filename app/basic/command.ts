@@ -289,7 +289,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 }
 
                 const startId = id.slice(0, id.indexOf('-'));
-                const endId = id.slice(id.indexOf('-'));
+                const endId = id.slice(id.indexOf('-') + 1);
                 console.log(`startId: ${startId}`)
                 console.log(`endId: ${endId}`)
                 // 자동 시퀸스 번호 코드
