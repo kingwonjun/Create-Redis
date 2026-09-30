@@ -300,7 +300,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 }
                 if (streamIdChecker !== undefined) {
                     const startIdToCompare = Number(streamIdChecker[0].id.slice(0, id.indexOf('-')));
-                    const endIdToCompare = Number(streamIdChecker[0].id.slice(id.indexOf('-')) + 1);
+                    const endIdToCompare = Number(streamIdChecker[0].id.slice(id.indexOf('-') + 1));
 
                     console.log(`startIdToCompare: ${startIdToCompare}`);
                     console.log(`endIdToCompare: ${endIdToCompare}`);
