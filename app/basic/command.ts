@@ -367,13 +367,11 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 }
 
                 const specifyKeyList = streamList.get(key);
+                console.log(JSON.stringify(specifyKeyList, null, 2));
                 if (typeof specifyKeyList === "undefined"){
                     break;
                 }
-                if(startId.includes("-")) {
-                    const startIdTimeAndSequence = startId.split("-");
-                }
-                else {
+                if(!startId.includes("-")) {
                     const idList = [];
                     for (let i = 0; i < specifyKeyList.length; i++) {
                         idList.push(Number(specifyKeyList[i].id.split("-")[1]));
@@ -394,10 +392,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                         }
                     }
                 }
-                if(endId.includes("-")) {
-                    const startIdTimeAndSequence = endId.split("-");
-                }
-                else {
+                if(!endId.includes("-")) {
                     const idList = [];
                     for (let i = 0; i < specifyKeyList.length; i++) {
                         idList.push(Number(specifyKeyList[i].id.split("-")[1]));
