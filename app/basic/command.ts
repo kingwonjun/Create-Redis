@@ -355,8 +355,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 // 이거는 방금전에 내가 바꿨다. 조심해야됨
                 keyIdList.unshift({id, fields: [...streamArray]});
                 streamArray.length = 0;
-                connection.write(`$${id.length}\r\n${id}\r\n`);
-                console.log(streamList);
+                connection.write(`$${id.length}\r\n${id}\r\n`)
                 break;
             }
             case "xrange": {
