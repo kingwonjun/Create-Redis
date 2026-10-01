@@ -300,7 +300,6 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     finalValue = String(Date.now()).concat("-").concat("0");
                     id = finalValue;
                 }
-                console.log(1);
                 // finalvalue -> id로 옮겨담고 후에 나올 로직을 위해 if(finalValue === uyndefined)이 나을까 finalValue ==  null 이 나을까 고민이 된다.;
                 if (finalValue === undefined) {
                     if (Number(id[id.length - 1]) <= 0) {
@@ -351,6 +350,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 // 이거는 방금전에 내가 바꿨다. 조심해야됨
                 keyIdList.unshift({id, fields: streamArray});
                 connection.write(`$${id.length}\r\n${id}\r\n`);
+                console.log(streamList);
                 break;
             }
             case "xrange": {
