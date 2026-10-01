@@ -333,6 +333,8 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                         }
                     }
                 }
+
+                console.log(`[command, ...args].length = ${[command, ...args].length}`);
                 for (let i = 2; i < [command, ...args].length - 3; i += 2) {
                     // i가 2부터 시작하니까 인덱스 0으로 맞추기위해 -2함
                     const keyValue1 = args[i].value;
