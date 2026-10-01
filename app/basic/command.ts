@@ -340,6 +340,8 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     if (typeof keyValue1 !== "string" || typeof keyValue2 !== "string") {
                         break;
                     }
+                    console.log(`keyValue1 = ${keyValue1}`);
+                    console.log(`keyValue2 = ${keyValue2}`);
                     streamArray.push({streamKey: keyValue1, streamValue: keyValue2});
                 }
                 console.log(streamArray);
