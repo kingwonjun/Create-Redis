@@ -382,6 +382,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                         idList.push(Number(specifyKeyList[i].id.split("-")[1]));
                     }
                     startId = startId.concat("-").concat(String(Math.min(...idList)));
+                    console.log(`startId = ${startId}`);
                 }
                 connection.write(Buffer.from(`$${startId.length}\r\n${startId}\r\n`));
                 for (let i = 0; i < specifyKeyList.length; i++) {
@@ -389,6 +390,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     console.log(`specifyKeyList[${i}] = ${specifyKeyList[i].id} startId = ${startId}`);
                     if (specifyKeyList[i].id === startId) {
                         console.log("작동");
+
                         connection.write(Buffer.from(`*${specifyKeyList[i].fields.length * 2}\r\n`));
                         for (let j = 0; j < specifyKeyList[i].fields.length; j++) {
                             connection.write(Buffer.from(`$${specifyKeyList[i].fields[j].streamKey.length}\r\n`));
