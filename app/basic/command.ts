@@ -322,11 +322,6 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                         const startIdToCompare = Number(streamIdChecker[0].id.slice(0, id.indexOf('-')));
                         const endIdToCompare = Number(streamIdChecker[0].id.slice(id.indexOf('-') + 1));
 
-                        console.log(`startIdToCompare: ${startIdToCompare}`);
-                        console.log(`endIdToCompare: ${endIdToCompare}`);
-                        console.log(`startId: ${startId}`);
-                        console.log(`endId: ${endId}`);
-
                         if (endId !== "*" && (startId < startIdToCompare || Number(endId) <= endIdToCompare)) {
                             connection.write('-ERR The ID specified in XADD is equal or smaller than the target stream top item\r\n');
                             break;
@@ -339,7 +334,6 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                         }
                     }
                 }
-                console.log(1);
                 for (let i = 2; i < [command, ...args].length - 3; i += 2) {
                     // i가 2부터 시작하니까 인덱스 0으로 맞추기위해 -2함
                     const keyValue1 = args[i].value;
@@ -357,6 +351,72 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 // 이거는 방금전에 내가 바꿨다. 조심해야됨
                 keyIdList.unshift({id, fields: streamArray});
                 connection.write(`$${id.length}\r\n${id}\r\n`);
+                break;
+            }
+            case "xrange": {
+                connection.write(Buffer.from('*2\r\n*2\r\n'));
+
+                const key = args[0].value;
+                let startId = args[1].value;
+                let endId = args[2].value;
+
+                if (typeof startId !== "string" ||
+                    typeof endId !== "string" ||
+                    typeof key !== "string") {
+                    break;
+                }
+
+                const specifyKeyList = streamList.get(key);
+                if (typeof specifyKeyList === "undefined"){
+                    break;
+                }
+                if(startId.includes("-")) {
+                    const startIdTimeAndSequence = startId.split("-");
+                    connection.write(Buffer.from(`$${startId.length}\r\n${startId}\r\n`));
+                }
+                else {
+                    const idList = [];
+                    for (let i = 0; i < specifyKeyList.length; i++) {
+                        idList.push(Number(specifyKeyList[i].id.split("-")[1]));
+                    }
+                    startId = startId.concat("-").concat(String(Math.min(...idList)));
+                }
+                connection.write(Buffer.from(`$${startId.length}\r\n${startId}\r\n`));
+                for (let i = 0; i < specifyKeyList.length; i++) {
+                    if (specifyKeyList[i].id === startId) {
+                        connection.write(Buffer.from(`*${specifyKeyList[i].fields.length * 2}\r\n`));
+                        for (let j = 0; j < specifyKeyList[i].fields.length; j++) {
+                            connection.write(Buffer.from(`$${specifyKeyList[i].fields[j].streamKey.length}\r\n`));
+                            connection.write(Buffer.from(`${specifyKeyList[i].fields[j].streamKey}\r\n`));
+                            connection.write(Buffer.from(`$${specifyKeyList[i].fields[j].streamValue.length}\r\n`));
+                            connection.write(Buffer.from(`${specifyKeyList[i].fields[j].streamValue}\r\n`));
+                        }
+                    }
+                }
+
+                if(endId.includes("-")) {
+                    const startIdTimeAndSequence = endId.split("-");
+                    connection.write(Buffer.from(`$${endId.length}\r\n${endId}\r\n`));
+                }
+                else {
+                    const idList = [];
+                    for (let i = 0; i < specifyKeyList.length; i++) {
+                        idList.push(Number(specifyKeyList[i].id.split("-")[1]));
+                    }
+                    endId = endId.concat("-").concat(String(Math.max(...idList)));
+                }
+                connection.write(Buffer.from(`$${endId.length}\r\n${endId}\r\n`));
+                for (let i = 0; i < specifyKeyList.length; i++) {
+                    if (specifyKeyList[i].id === endId) {
+                        connection.write(Buffer.from(`*${specifyKeyList[i].fields.length * 2}\r\n`));
+                        for (let j = 0; j < specifyKeyList[i].fields.length; j++) {
+                            connection.write(Buffer.from(`$${specifyKeyList[i].fields[j].streamKey.length}\r\n`));
+                            connection.write(Buffer.from(`${specifyKeyList[i].fields[j].streamKey}\r\n`));
+                            connection.write(Buffer.from(`$${specifyKeyList[i].fields[j].streamValue.length}\r\n`));
+                            connection.write(Buffer.from(`${specifyKeyList[i].fields[j].streamValue}\r\n`));
+                        }
+                    }
+                }
                 break;
             }
         }
