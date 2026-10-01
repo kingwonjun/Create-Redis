@@ -342,8 +342,8 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     if (typeof keyValue1 !== "string" || typeof keyValue2 !== "string") {
                         break;
                     }
-                    console.log(`keyValue1 = ${keyValue1}`);
-                    console.log(`keyValue2 = ${keyValue2}`);
+                    //console.log(`keyValue1 = ${keyValue1}`);
+                    //console.log(`keyValue2 = ${keyValue2}`);
                     streamArray.push({streamKey: keyValue1, streamValue: keyValue2});
                 }
                 console.log(streamArray);
@@ -355,7 +355,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 // 이거는 방금전에 내가 바꿨다. 조심해야됨
                 keyIdList.unshift({id, fields: [...streamArray]});
                 streamArray.length = 0;
-                connection.write(`$${id.length}\r\n${id}\r\n`)
+                connection.write(`$${id.length}\r\n${id}\r\n`);
                 break;
             }
             case "xrange": {
@@ -388,6 +388,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     console.log(`specifyKeyList.length = ${specifyKeyList.length}`);
                     console.log(`specifyKeyList[${i}] = ${specifyKeyList[i].id} startId = ${startId}`);
                     if (specifyKeyList[i].id === startId) {
+                        console.log("작동");
                         connection.write(Buffer.from(`*${specifyKeyList[i].fields.length * 2}\r\n`));
                         for (let j = 0; j < specifyKeyList[i].fields.length; j++) {
                             connection.write(Buffer.from(`$${specifyKeyList[i].fields[j].streamKey.length}\r\n`));
