@@ -372,7 +372,6 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 }
                 if(startId.includes("-")) {
                     const startIdTimeAndSequence = startId.split("-");
-                    connection.write(Buffer.from(`$${startId.length}\r\n${startId}\r\n`));
                 }
                 else {
                     const idList = [];
@@ -396,7 +395,6 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
 
                 if(endId.includes("-")) {
                     const startIdTimeAndSequence = endId.split("-");
-                    connection.write(Buffer.from(`$${endId.length}\r\n${endId}\r\n`));
                 }
                 else {
                     const idList = [];
