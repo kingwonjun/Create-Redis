@@ -382,6 +382,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 }
                 connection.write(Buffer.from(`$${startId.length}\r\n${startId}\r\n`));
                 for (let i = 0; i < specifyKeyList.length; i++) {
+                    console.log(`specifyKeyList.length = ${specifyKeyList.id}`);
                     console.log(`specifyKeyList[${i}] = ${specifyKeyList[i].id} startId = ${startId}`);
                     if (specifyKeyList[i].id === startId) {
                         connection.write(Buffer.from(`*${specifyKeyList[i].fields.length * 2}\r\n`));
