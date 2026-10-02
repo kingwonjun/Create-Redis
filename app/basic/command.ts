@@ -349,15 +349,13 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 console.log(streamArray);
                 let keyIdList = streamList.get(key);
                 if (keyIdList !== undefined) {
+                    keyIdList.unshift({id, fields: [...streamArray]});
                     streamList.set(key, keyIdList);
                 }
                 else {
-                    streamList.set(key, []);
+                    streamList.set(key, [{id, fields: [...streamArray]}]);
                 }
-
-
-                keyIdList.unshift({id, fields: [...streamArray]});
-
+                
                 // 이거는 방금전에 내가 바꿨다. 조심해야됨
                 streamArray.length = 0;
                 connection.write(`$${id.length}\r\n${id}\r\n`);
