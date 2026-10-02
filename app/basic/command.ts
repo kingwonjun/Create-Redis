@@ -352,7 +352,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 if (keyIdList === undefined) {
                     break;
                 }
-                streamList.set(key, keyIdList);
+                streamList.set(key, []);
                 // 이거는 방금전에 내가 바꿨다. 조심해야됨
                 keyIdList.unshift({id, fields: [...streamArray]});
                 streamArray.length = 0;
