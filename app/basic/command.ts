@@ -414,7 +414,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 const keyListCopy = [...streamList.keys()];
                 for (let i = strKeyListStartIndex; i <= strKeyListEndIndex; i++) {
                     connection.write(Buffer.from(`*2\r\n`));
-                    connection.write(Buffer.from(`*${keyListCopy[i].length}\r\n`));
+                    connection.write(Buffer.from(`$${keyListCopy[i].length}\r\n`));
                     connection.write(Buffer.from(`${keyListCopy[i]}\r\n`));
                 }
 
