@@ -407,6 +407,8 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                         break;
                     }
                 }
+                console.log(`strKeyLIstStratIndex = ${strKeyListStartIndex}`);
+                console.log(`strKeyListEndIndex = ${strKeyListEndIndex}`);
                 const keyLength = strKeyListEndIndex - strKeyListStartIndex + 1;
                 connection.write(Buffer.from(`*${keyLength}\r\n`));
                 const keyListCopy = [...streamList.keys()];
