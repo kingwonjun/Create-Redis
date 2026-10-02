@@ -395,13 +395,13 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 let strKeyListEndIndex : number = 0
                 const strKeyList = specifyKeyList?.map(specifyKey => specifyKey.id);
                 // 2개의 for문을 쓰는 이유는 동일한 id가 왔을때 맨앞에 있던 if문에 맞는 동일한 id가 무시되고 다음으로 넘어가기 때문
-                for (let i = 0; i < [...streamList.values()].length; i++) {
+                for (let i = 0; i < strKeyList.length; i++) {
                     if (startId === strKeyList[i]) {
                         strKeyListStartIndex = i;
                         break;
                     }
                 }
-                for (let i = [...streamList.values()].length - 1; i >= 0; i--) {
+                for (let i = strKeyList.length - 1; i >= 0; i--) {
                     if (endId === strKeyList[i]) {
                         strKeyListEndIndex = i;
                         break;
