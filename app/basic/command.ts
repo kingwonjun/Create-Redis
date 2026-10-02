@@ -411,12 +411,10 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 console.log(`strKeyListEndIndex = ${strKeyListEndIndex}`);
                 const keyLength = strKeyListEndIndex - strKeyListStartIndex + 1;
                 connection.write(Buffer.from(`*${keyLength}\r\n`));
-                const keyListCopy = [...streamList.keys()];
                 for (let i = strKeyListStartIndex; i <= strKeyListEndIndex; i++) {
                     connection.write(Buffer.from(`*2\r\n`));
-                    console.log("작동");
-                    connection.write(Buffer.from(`$${keyListCopy[i].length}\r\n`));
-                    connection.write(Buffer.from(`${keyListCopy[i]}\r\n`));
+                    connection.write(Buffer.from(`$${strKeyList[i].length}\r\n`));
+                    connection.write(Buffer.from(`${strKeyList[i]}\r\n`));
                 }
 
                 break;
