@@ -347,6 +347,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     streamArray.push({streamKey: keyValue1, streamValue: keyValue2});
                 }
                 console.log(streamArray);
+                streamList.set(key, []);
                 const keyIdList = streamList.get(key);
                 if (keyIdList === undefined) {
                     break;
