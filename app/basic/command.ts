@@ -355,14 +355,14 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 else {
                     streamList.set(key, [{id, fields: [...streamArray]}]);
                 }
-                
+
                 // 이거는 방금전에 내가 바꿨다. 조심해야됨
                 streamArray.length = 0;
                 connection.write(`$${id.length}\r\n${id}\r\n`);
                 break;
             }
             case "xrange": {
-                connection.write(Buffer.from('*2\r\n*2\r\n'));a
+                connection.write(Buffer.from('*2\r\n*2\r\n'));
 
                 const key = args[0].value;
                 let startId = args[1].value;
