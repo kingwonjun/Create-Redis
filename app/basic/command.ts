@@ -346,7 +346,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     //console.log(`keyValue2 = ${keyValue2}`);
                     streamArray.push({streamKey: keyValue1, streamValue: keyValue2});
                 }
-                console.log(streamArray);
+                console.log(streamArray);6
                 let keyIdList = streamList.get(key);
                 if (keyIdList !== undefined) {
                     keyIdList.push({id, fields: [...streamArray]});
@@ -362,8 +362,6 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 break;
             }
             case "xrange": {
-                connection.write(Buffer.from('*2\r\n*2\r\n'));
-
                 const key = args[0].value;
                 let startId = args[1].value;
                 let endId = args[2].value;
@@ -380,47 +378,44 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     break;
                 }
                 if(!startId.includes("-")) {
-                    const idList = [];
+                    const startIdList = [];
                     for (let i = 0; i < specifyKeyList.length; i++) {
-                        idList.push(Number(specifyKeyList[i].id.split("-")[1]));
+                        startIdList.push(Number(specifyKeyList[i].id.split("-")[1]));
                     }
-                    startId = startId.concat("-").concat(String(Math.min(...idList)));
-                }
-                connection.write(Buffer.from(`$${startId.length}\r\n${startId}\r\n`));
-                for (let i = 0; i < specifyKeyList.length; i++) {
-                    console.log(`specifyKeyList.length = ${specifyKeyList.length}`);
-                    console.log(`specifyKeyList[${i}] = ${specifyKeyList[i].id} startId = ${startId}`);
-                    if (specifyKeyList[i].id === startId) {
-                        console.log("작동");
-
-                        connection.write(Buffer.from(`*${specifyKeyList[i].fields.length * 2}\r\n`));
-                        for (let j = 0; j < specifyKeyList[i].fields.length; j++) {
-                            connection.write(Buffer.from(`$${specifyKeyList[i].fields[j].streamKey.length}\r\n`));
-                            connection.write(Buffer.from(`${specifyKeyList[i].fields[j].streamKey}\r\n`));
-                            connection.write(Buffer.from(`$${specifyKeyList[i].fields[j].streamValue.length}\r\n`));
-                            connection.write(Buffer.from(`${specifyKeyList[i].fields[j].streamValue}\r\n`));
-                        }
-                    }
+                    startId = startId.concat("-").concat(String(Math.min(...startIdList)));
                 }
                 if(!endId.includes("-")) {
-                    const idList = [];
+                    const endIdList = [];
                     for (let i = 0; i < specifyKeyList.length; i++) {
-                        idList.push(Number(specifyKeyList[i].id.split("-")[1]));
+                        endIdList.push(Number(specifyKeyList[i].id.split("-")[1]));
                     }
-                    endId = endId.concat("-").concat(String(Math.max(...idList)));
+                    endId = endId.concat("-").concat(String(Math.max(...endIdList)));
                 }
-                connection.write(Buffer.from(`$${endId.length}\r\n${endId}\r\n`));
-                for (let i = 0; i < specifyKeyList.length; i++) {
-                    if (specifyKeyList[i].id === endId) {
-                        connection.write(Buffer.from(`*${specifyKeyList[i].fields.length * 2}\r\n`));
-                        for (let j = 0; j < specifyKeyList[i].fields.length; j++) {
-                            connection.write(Buffer.from(`$${specifyKeyList[i].fields[j].streamKey.length}\r\n`));
-                            connection.write(Buffer.from(`${specifyKeyList[i].fields[j].streamKey}\r\n`));
-                            connection.write(Buffer.from(`$${specifyKeyList[i].fields[j].streamValue.length}\r\n`));
-                            connection.write(Buffer.from(`${specifyKeyList[i].fields[j].streamValue}\r\n`));
-                        }
+                let strKeyListStartIndex : number = 0;
+                let strKeyListEndIndex : number = 0
+                const strKeyList = [...streamList.keys()];
+                // 2개의 for문을 쓰는 이유는 동일한 id가 왔을때 맨앞에 있던 if문에 맞는 동일한 id가 무시되고 다음으로 넘어가기 때문
+                for (let i = 0; i < [...streamList.keys()].length; i++) {
+                    if (startId === strKeyList[i]) {
+                        strKeyListStartIndex = i;
+                        break;
                     }
                 }
+                for (let i = [...streamList.keys()].length - 1; i >= 0; i--) {
+                    if (endId === strKeyList[i]) {
+                        strKeyListEndIndex = i;
+                        break;
+                    }
+                }
+                const keyLength = strKeyListEndIndex - strKeyListStartIndex + 1;
+                connection.write(Buffer.from(`*${keyLength}\r\n`));
+                const keyListCopy = [...streamList.keys()];
+                for (let i = strKeyListStartIndex; i <= strKeyListEndIndex; i++) {
+                    connection.write(Buffer.from(`*2\r\n`));
+                    connection.write(Buffer.from(`*${keyListCopy[i].length}\r\n`));
+                    connection.write(Buffer.from(`${keyListCopy[i]}\r\n`));
+                }
+
                 break;
             }
         }
