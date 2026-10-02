@@ -349,7 +349,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 console.log(streamArray);
                 let keyIdList = streamList.get(key);
                 if (keyIdList !== undefined) {
-                    keyIdList.unshift({id, fields: [...streamArray]});
+                    keyIdList.push({id, fields: [...streamArray]});
                     streamList.set(key, keyIdList);
                 }
                 else {
