@@ -457,7 +457,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     if (typeof value === "string") {
                         arrValue.push(value);
                     }
-                    console.log(`실행`;
+                    console.log(`실행`);
                 }
                 let startId: string;
                 let endId : string;
