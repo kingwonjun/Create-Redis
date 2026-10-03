@@ -1,5 +1,6 @@
 import net from "net";
 import type {BlockedClient, ParseResult, RespValue, StoreValue, StreamEntry, StreamKeyValue} from "./resp.ts";
+import * as querystring from "node:querystring";
 
 const encodeResp = (value: RespValue | StoreValue | string): string => {
 
@@ -441,102 +442,64 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 break;
             }
             case "xread": {
-                let key1 = args[1].value;
-                let key2 = args[2].value;
-                let id1 = args[3].value
-                let id2 = args[4].value
-
-                console.log(`key1 = ${key1}`);
-                console.log(`key2 = ${key2}`);
-                console.log(`id1 = ${id1}`);
-                console.log(`id2 = ${id2}`);
-
-                // 이 코드 안풀릴 때 조심해야겠다.
-                if (typeof id1 === "undefined") {
-                    id1 = key2
-
-                }
-
-                if (typeof key1 !== "string" || typeof id1 !== "string") {
-                    break;
-                }
-                //이 두 변수는 후에 코드에 필요한다. const였는데 let으로 바꿈
-                let specifyKeyList;
-                let strKeyList;
-
-                specifyKeyList = streamList.get(key1);
-                strKeyList = specifyKeyList?.map(specifyKey => specifyKey.id);
-
-                if (typeof specifyKeyList === "undefined" ) {
-                    break;
-                }
-                if (typeof strKeyList === "undefined") {
-                    break;
-                }
-
-                let largerId: number = 0;
-                for (let i = 0; i < strKeyList.length; i++) {
-                    if (id1 === strKeyList[i]) {
-                        // 같은 id가 아니라 기존 id보다 더 큰 값들을 출력해야되기 때문
-                        largerId = i + 1;
-                        break;
+                const arrKey: string[]= [];
+                for (let i = 0; i < [command, ...args].length / 2; i++) {
+                    const key = args[i].value;
+                    if (typeof key === "string") {
+                        arrKey.push(key);
                     }
                 }
-
-                connection.write(Buffer.from(`*1\r\n`));
-                connection.write(Buffer.from(`*2\r\n`));
-                connection.write(Buffer.from(`$${key1.length}\r\n`));
-                connection.write(Buffer.from(`${key1}\r\n`));
-                connection.write(Buffer.from(`*1\r\n`));
-                for (let i = largerId; i < specifyKeyList.length; i++) {
-                    connection.write(Buffer.from(`*2\r\n`));
-                    connection.write(Buffer.from(`$${strKeyList[i].length}\r\n`));
-                    connection.write(Buffer.from(`${strKeyList[i]}\r\n`));
-                    connection.write(Buffer.from(`*${specifyKeyList[i].fields.length * 2}\r\n`));
-                    for (let j = 0; j < specifyKeyList[i].fields.length; j++) {
-                        connection.write(Buffer.from(`$${specifyKeyList[i].fields[j].streamKey.length}\r\n`));
-                        connection.write(Buffer.from(`${specifyKeyList[i].fields[j].streamKey}\r\n`));
-                        connection.write(Buffer.from(`$${specifyKeyList[i].fields[j].streamValue.length}\r\n`));
-                        connection.write(Buffer.from(`${specifyKeyList[i].fields[j].streamValue}\r\n`));
+                const arrValue: string[]= [];
+                for (let i = [command, ...args].length / 2 + 1; i < [command, ...args].length; i++) {
+                    const value = args[i].value;
+                    if (typeof value === "string") {
+                        arrValue.push(value);
                     }
                 }
+                let startId: string;
+                let endId : string;
+                let startIdToCompare : string;
+                let endIdToCompare : string;
 
-                if (typeof key2 === "string") {
-
-                    console.log(`key1 = ${key1}`);
-                    console.log(`key2 = ${key2}`);
-                    console.log(`id1 = ${id1}`);
-                    console.log(`id2 = ${id2}`);
-                    // 그냥 2개를 불러오는거라서 중복된 코드라도 단순하게 나열해봄
-                    specifyKeyList = streamList.get(key2);
-                    strKeyList = specifyKeyList?.map(specifyKey => specifyKey.id);
-
-                    console.log(`strKeyList = ${JSON.stringify(strKeyList)}`);
-
-                    if (typeof specifyKeyList === "undefined" ) {
-                        break;
+                for (let i = 0; i < arrKey.length; i++) {
+                    // specifyKeyList는 key값이 정해지고 설정해야한다.
+                    const specifyKeyList = streamList.get(arrValue[i]);
+                    const strKeyList = specifyKeyList?.map(specifyKey => specifyKey.id);
+                    if (specifyKeyList === undefined || strKeyList === undefined) {
+                        return;
                     }
-                    if (typeof strKeyList === "undefined") {
-                        break;
-                    }
-                    console.log(`여기도`)
+                    startId = arrKey[i].split("-")[0];
+                    endId = arrKey[i].split("-")[1];
+                    // key보다 한단계 더 큰 인덱스
+                    let correctIndex = 0;
+
+                    // id가 주어지면 그 id와 같은 id가 아닌 위에 있는 id를 꺼내와야한다.
+                    // 그래서 id가 같은 값을 specifyKeyList에서 for문을 돌며 뽑은다음 그거에 제일 윗단계를 뽑으면 된다. 같은값이 없을경우가 문제인듯 하다.
+                    // 위에는 거는 아니다. 직접 비교를 통해서 해야될것 같다.
+                    // 우선 startId "startId - endId" 로 바꿔서 우선적으로 startId를 비교한뒤 같으면 endId를 비교하여 map의 적절한 인덱스를 찾아야된다.
+                    // map이 순서대로 있기때문에 그게 가능한듯하다.
+                    // 주의해야될점은 아무리 같은게 있더라도 자기보다 큰게 없다면 출력을 하지 않는것 같다. 이 테스트에서는 고려하지 않을 것 같다.
                     for (let i = 0; i < strKeyList.length; i++) {
-                        if (id2 === strKeyList[i]) {
-                            // 같은 id가 아니라 기존 id보다 더 큰 값들을 출력해야되기 때문
-                            largerId = i + 1;
+                        startIdToCompare = strKeyList[i].split("-")[0];
+                        endIdToCompare = strKeyList[i].split("-")[1];
+                        if (startId < startIdToCompare) {
+                            correctIndex = i;
+                            break;
+                        }
+                        if (startId == startIdToCompare && endId < endIdToCompare) {
+                            correctIndex = i;
                             break;
                         }
                     }
-                    connection.write(Buffer.from(`*1\r\n`));
-                    connection.write(Buffer.from(`*2\r\n`));
-                    connection.write(Buffer.from(`$${key2.length}\r\n`));
-                    connection.write(Buffer.from(`${key2}\r\n`));
-                    connection.write(Buffer.from(`*1\r\n`));
-                    for (let i = largerId; i < specifyKeyList.length; i++) {
+
+                    const keyLength = strKeyList.length - correctIndex + 1;
+                    connection.write(Buffer.from(`*${keyLength}\r\n`));
+                    for (let i = correctIndex; i <= strKeyList.length; i++) {
                         connection.write(Buffer.from(`*2\r\n`));
                         connection.write(Buffer.from(`$${strKeyList[i].length}\r\n`));
                         connection.write(Buffer.from(`${strKeyList[i]}\r\n`));
                         connection.write(Buffer.from(`*${specifyKeyList[i].fields.length * 2}\r\n`));
+
                         for (let j = 0; j < specifyKeyList[i].fields.length; j++) {
                             connection.write(Buffer.from(`$${specifyKeyList[i].fields[j].streamKey.length}\r\n`));
                             connection.write(Buffer.from(`${specifyKeyList[i].fields[j].streamKey}\r\n`));
