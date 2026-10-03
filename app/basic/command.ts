@@ -497,15 +497,16 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 }
 
                 if (typeof key2 === "string") {
-                    console.log("여기 들어오나요");
                     // 그냥 2개를 불러오는거라서 중복된 코드라도 단순하게 나열해봄
                     specifyKeyList = streamList.get(key2);
                     strKeyList = specifyKeyList?.map(specifyKey => specifyKey.id);
 
                     if (typeof specifyKeyList === "undefined" ) {
+                        console.log("dd");
                         break;
                     }
                     if (typeof strKeyList === "undefined") {
+                        console.log("dd");
                         break;
                     }
                     for (let i = 0; i < strKeyList.length; i++) {
