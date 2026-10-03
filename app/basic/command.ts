@@ -323,6 +323,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                             break;
                         }
                         if (startId !== startIdToCompare && endId === "*") {
+                            console.log("여기인것 같은데");
                             id = String(startId).concat("-").concat("0");
                         }
                         if (startId === startIdToCompare && endId === "*") {
