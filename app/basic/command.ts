@@ -468,7 +468,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 }
 
                 // 2개의 for문을 쓰는 이유는 동일한 id가 왔을때 맨앞에 있던 if문에 맞는 동일한 id가 무시되고 다음으로 넘어가기 때문
-
+                console.log(specifyKeyList);
                 for (let i = largerId; i < specifyKeyList.length; i++) {
                     connection.write(Buffer.from(`*2\r\n`));
                     connection.write(Buffer.from(`$${strKeyList[i].length}\r\n`));
