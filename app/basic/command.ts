@@ -466,7 +466,8 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     const specifyKeyList = streamList.get(arrValue[i]);
                     const strKeyList = specifyKeyList?.map(specifyKey => specifyKey.id);
                     if (specifyKeyList === undefined || strKeyList === undefined) {
-                        return;
+                        console.log("break")
+                        break;
                     }
                     startId = arrKey[i].split("-")[0];
                     endId = arrKey[i].split("-")[1];
