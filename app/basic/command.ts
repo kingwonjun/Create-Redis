@@ -450,7 +450,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 console.log(`key2 = ${key2}`);
                 console.log(`id1 = ${id1}`);
                 console.log(`id2 = ${id2}`);
-                
+
                 // 이 코드 안풀릴 때 조심해야겠다.
                 if (typeof id1 === "undefined") {
                     id1 = key2
@@ -502,6 +502,11 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 }
 
                 if (typeof key2 === "string") {
+
+                    console.log(`key1 = ${key1}`);
+                    console.log(`key2 = ${key2}`);
+                    console.log(`id1 = ${id1}`);
+                    console.log(`id2 = ${id2}`);
                     // 그냥 2개를 불러오는거라서 중복된 코드라도 단순하게 나열해봄
                     specifyKeyList = streamList.get(key2);
                     strKeyList = specifyKeyList?.map(specifyKey => specifyKey.id);
