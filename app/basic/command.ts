@@ -466,6 +466,9 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 let endIdToCompare : string;
                 console.log(`실행`);
                 console.log(`arrKey.length = ${arrKey.length}`);
+
+                connection.write(Buffer.from(`*${streamList.size}\r\n`));
+
                 for (let i = 0; i < arrKey.length; i++) {
                     // specifyKeyList는 key값이 정해지고 설정해야한다.
                     console.log(`i = 처음 ${i}`);
@@ -506,18 +509,20 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     console.log(`correctIndex = ${correctIndex}`);
                     console.log(`strKeyList[0] = ${strKeyList[0]}`);
                     connection.write(Buffer.from(`*2\r\n`));
+                    connection.write(Buffer.from(`$${arrKey[i].length}\r\n`));
+                    connection.write(Buffer.from(`${arrKey[i]}\r\n`));
                     console.log(`key length가 작동을 안해`);
-                    for (let i = correctIndex; i < keyLength; i++) {
+                    for (let j = correctIndex; j < keyLength; j++) {
                         connection.write(Buffer.from(`*2\r\n`));
-                        connection.write(Buffer.from(`$${strKeyList[i].length}\r\n`));
-                        connection.write(Buffer.from(`${strKeyList[i]}\r\n`));
-                        connection.write(Buffer.from(`*${specifyKeyList[i].fields.length * 2}\r\n`));
+                        connection.write(Buffer.from(`$${strKeyList[j].length}\r\n`));
+                        connection.write(Buffer.from(`${strKeyList[j]}\r\n`));
+                        connection.write(Buffer.from(`*${specifyKeyList[j].fields.length * 2}\r\n`));
 
-                        for (let j = 0; j < specifyKeyList[i].fields.length; j++) {
-                            connection.write(Buffer.from(`$${specifyKeyList[i].fields[j].streamKey.length}\r\n`));
-                            connection.write(Buffer.from(`${specifyKeyList[i].fields[j].streamKey}\r\n`));
-                            connection.write(Buffer.from(`$${specifyKeyList[i].fields[j].streamValue.length}\r\n`));
-                            connection.write(Buffer.from(`${specifyKeyList[i].fields[j].streamValue}\r\n`));
+                        for (let k = 0; k < specifyKeyList[i].fields.length; k++) {
+                            connection.write(Buffer.from(`$${specifyKeyList[i].fields[k].streamKey.length}\r\n`));
+                            connection.write(Buffer.from(`${specifyKeyList[i].fields[k].streamKey}\r\n`));
+                            connection.write(Buffer.from(`$${specifyKeyList[i].fields[k].streamValue.length}\r\n`));
+                            connection.write(Buffer.from(`${specifyKeyList[i].fields[k].streamValue}\r\n`));
                         }
                     }
                 }
