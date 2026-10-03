@@ -441,8 +441,43 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 break;
             }
             case "xread": {
-                const key = args[0].value;
-                console.log(`'hello`);
+                const key = args[1].value;
+                const id = args[2].value;
+
+                if (typeof key !== "string" || typeof Ii !== "string") {
+                    break;
+                }
+
+                const specifyKeyList = streamList.get(key);
+                if (typeof specifyKeyList === "undefined") {
+                    break;
+                }
+                let largerId: number = 0;
+                for (let i = 0; i < specifyKeyList.length; i++) {
+                    if (id === specifyKeyList[i].id) {
+                        // 같은 id가 아니라 기존 id보다 더 큰 값들을 출력해야되기 때문
+                        largerId = i + 1;
+                        break;
+                    }
+                }
+
+                let strKeyListStartIndex: number = 0;
+                let strKeyListEndIndex: number = 0
+                const strKeyList = specifyKeyList?.map(specifyKey => specifyKey.id);
+                // 2개의 for문을 쓰는 이유는 동일한 id가 왔을때 맨앞에 있던 if문에 맞는 동일한 id가 무시되고 다음으로 넘어가기 때문
+
+                for (let i = largerId; i < specifyKeyList.length; i++) {
+                    connection.write(Buffer.from(`*2\r\n`));
+                    connection.write(Buffer.from(`$${strKeyList[i].length}\r\n`));
+                    connection.write(Buffer.from(`${strKeyList[i]}\r\n`));
+                    connection.write(Buffer.from(`*${specifyKeyList[i].fields.length * 2}\r\n`));
+                    for (let j = 0; j < specifyKeyList[i].fields.length; j++) {
+                        connection.write(Buffer.from(`$${specifyKeyList[i].fields[j].streamKey.length}\r\n`));
+                        connection.write(Buffer.from(`${specifyKeyList[i].fields[j].streamKey}\r\n`));
+                        connection.write(Buffer.from(`$${specifyKeyList[i].fields[j].streamValue.length}\r\n`));
+                        connection.write(Buffer.from(`${specifyKeyList[i].fields[j].streamValue}\r\n`));
+                    }
+                }
             }
         }
     }
