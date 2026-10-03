@@ -469,14 +469,14 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 for (let i = 0; i < arrKey.length; i++) {
                     // specifyKeyList는 key값이 정해지고 설정해야한다.
                     console.log(`i = 처음 ${i}`);
-                    const specifyKeyList = streamList.get(arrValue[i]);
+                    const specifyKeyList = streamList.get(arrKey[i]);
                     const strKeyList = specifyKeyList?.map(specifyKey => specifyKey.id);
                     if (specifyKeyList === undefined || strKeyList === undefined) {
                         console.log("여기서 걸리나요");
                         break;
                     }
-                    startId = arrKey[i].split("-")[0];
-                    endId = arrKey[i].split("-")[1];
+                    startId = arrValue[i].split("-")[0];
+                    endId = arrValue[i].split("-")[1];
                     // key보다 한단계 더 큰 인덱스
                     let correctIndex = 0;
 
