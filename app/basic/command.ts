@@ -296,7 +296,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     }
                     finalValue = String(autoValueStartId).concat("-").concat(String(autoValueEndId));
                     id = finalValue;
-                } else if (id === "*"){
+                } else if (id === "*") {
                     finalValue = String(Date.now()).concat("-").concat("0");
                     id = finalValue;
                 }
@@ -351,8 +351,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 if (keyIdList !== undefined) {
                     keyIdList.push({id, fields: [...streamArray]});
                     streamList.set(key, keyIdList);
-                }
-                else {
+                } else {
                     streamList.set(key, [{id, fields: [...streamArray]}]);
                 }
 
@@ -374,25 +373,25 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
 
                 const specifyKeyList = streamList.get(key);
                 console.log(JSON.stringify(specifyKeyList, null, 2));
-                if (typeof specifyKeyList === "undefined"){
+                if (typeof specifyKeyList === "undefined") {
                     break;
                 }
-                if(!startId.includes("-")) {
+                if (!startId.includes("-")) {
                     const startIdList = [];
                     for (let i = 0; i < specifyKeyList.length; i++) {
                         startIdList.push(Number(specifyKeyList[i].id.split("-")[1]));
                     }
                     startId = startId.concat("-").concat(String(Math.min(...startIdList)));
                 }
-                if(!endId.includes("-")) {
+                if (!endId.includes("-")) {
                     const endIdList = [];
                     for (let i = 0; i < specifyKeyList.length; i++) {
                         endIdList.push(Number(specifyKeyList[i].id.split("-")[1]));
                     }
                     endId = endId.concat("-").concat(String(Math.max(...endIdList)));
                 }
-                let strKeyListStartIndex : number = 0;
-                let strKeyListEndIndex : number = 0
+                let strKeyListStartIndex: number = 0;
+                let strKeyListEndIndex: number = 0
                 const strKeyList = specifyKeyList?.map(specifyKey => specifyKey.id);
                 // 2개의 for문을 쓰는 이유는 동일한 id가 왔을때 맨앞에 있던 if문에 맞는 동일한 id가 무시되고 다음으로 넘어가기 때문
                 for (let i = 0; i < strKeyList.length; i++) {
@@ -416,29 +415,26 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     connection.write(Buffer.from(`$${strKeyList[i].length}\r\n`));
                     connection.write(Buffer.from(`${strKeyList[i]}\r\n`));
                     connection.write(Buffer.from(`*${specifyKeyList[i].fields.length * 2}\r\n`));
-                    for (let j = i; j < i + keyLength; j++) {
-                        //specifyKeyList는 streamList의 키값 <리스트이름>을 줘서 value인
-                        //StreamEntry의 배열을 반환한다.
-                        //StreamEntry는 id: string과 fields: StreamKeyValue[]를 가지고있다.
-                        //field에 있는 streamKeyValue는 streamKey와 streamValue로 이루어져있다.
-                        //출력해야 될거는 fields 즉
-                        //fields는 streamKeyValue[]의 배열로 이루어져있있다.
-                        //그렇다면 어떤 구조를 가지고 있으며 어떻게 변환해야될까
-                        //예를 든 형태는 이렇다. [id: 1-1, [[streamKey: 1. streamValue: 2][streamKey: 2, streamValue 3]]]
-                        //그러면 반환은 [ 1, 2, 2, 3]으로 해야하니까
-                        //먼저 Map.get(id)로 한다면[[streamKey: 1. streamValue: 2][streamKey: 2, streamValue 3]] 를 반환하고
-                        //Map.get(id)[i]로 순회하면서 for문으로 i < Map.get(id).length .이런식으로 한 뒤
-                        //Map.get(id)[i].streamKey와 streamValue를 차례대로 넣는다.
+                    //specifyKeyList는 streamList의 키값 <리스트이름>을 줘서 value인
+                    //StreamEntry의 배열을 반환한다.
+                    //StreamEntry는 id: string과 fields: StreamKeyValue[]를 가지고있다.
+                    //field에 있는 streamKeyValue는 streamKey와 streamValue로 이루어져있다.
+                    //출력해야 될거는 fields 즉
+                    //fields는 streamKeyValue[]의 배열로 이루어져있있다.
+                    //그렇다면 어떤 구조를 가지고 있으며 어떻게 변환해야될까
+                    //예를 든 형태는 이렇다. [id: 1-1, [[streamKey: 1. streamValue: 2][streamKey: 2, streamValue 3]]]
+                    //그러면 반환은 [ 1, 2, 2, 3]으로 해야하니까
+                    //먼저 Map.get(id)로 한다면[[streamKey: 1. streamValue: 2][streamKey: 2, streamValue 3]] 를 반환하고
+                    //Map.get(id)[i]로 순회하면서 for문으로 i < Map.get(id).length .이런식으로 한 뒤
+                    //Map.get(id)[i].streamKey와 streamValue를 차례대로 넣는다.
 
-                        //const specifyKeyList = streamList.get(key);
-                        //const strKeyList = specifyKeyList?.map(specifyKey => specifyKey.id);
-                        for (let k  = 0; k < specifyKeyList[j].fields.length; k++) {
-                            connection.write(Buffer.from(`$${specifyKeyList[j].fields[k].streamKey.length}\r\n`));
-                            connection.write(Buffer.from(`${specifyKeyList[j].fields[k].streamKey}\r\n`));
-                            connection.write(Buffer.from(`$${specifyKeyList[j].fields[k].streamValue.length}\r\n`));
-                            connection.write(Buffer.from(`${specifyKeyList[j].fields[k].streamValue}\r\n`));
-                        }
-
+                    //const specifyKeyList = streamList.get(key);
+                    //const strKeyList = specifyKeyList?.map(specifyKey => specifyKey.id);
+                    for (let j = 0; j < specifyKeyList[i].fields.length; j++) {
+                        connection.write(Buffer.from(`$${specifyKeyList[i].fields[j].streamKey.length}\r\n`));
+                        connection.write(Buffer.from(`${specifyKeyList[i].fields[j].streamKey}\r\n`));
+                        connection.write(Buffer.from(`$${specifyKeyList[i].fields[j].streamValue.length}\r\n`));
+                        connection.write(Buffer.from(`${specifyKeyList[i].fields[j].streamValue}\r\n`));
                     }
                 }
                 break;
