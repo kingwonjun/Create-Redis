@@ -309,6 +309,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     const endId = id.slice(id.indexOf('-') + 1);
                     // 자동 시퀸스 번호 코드
                     if (streamIdChecker === undefined && startId === 0 && endId === "*") {
+                        console.log("여기");
                         id = String(startId).concat("-").concat("1");
                     } else if (streamIdChecker === undefined && endId === "*") {
                         id = String(startId).concat("-").concat("0");
