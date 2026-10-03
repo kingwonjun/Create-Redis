@@ -435,7 +435,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                         for (let k  = 0; k < specifyKeyList[j].fields.length; k++) {
                             connection.write(Buffer.from(`$${specifyKeyList[j].fields[k].streamKey.length}\r\n`));
                             connection.write(Buffer.from(`${specifyKeyList[j].fields[k].streamKey}\r\n`));
-                            connection.write(Buffer.from(`${specifyKeyList[j].fields[k].streamValue}\r\n`));
+                            connection.write(Buffer.from(`${specifyKeyList[j].fields[k].streamValue.length}\r\n`));
                             connection.write(Buffer.from(`${specifyKeyList[j].fields[k].streamValue}\r\n`));
                         }
 
