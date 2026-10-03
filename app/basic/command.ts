@@ -519,6 +519,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     if (typeof strKeyList === "undefined") {
                         break;
                     }
+                    console.log(`여기도`)
                     for (let i = 0; i < strKeyList.length; i++) {
                         if (id2 === strKeyList[i]) {
                             // 같은 id가 아니라 기존 id보다 더 큰 값들을 출력해야되기 때문
