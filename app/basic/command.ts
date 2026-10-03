@@ -457,12 +457,11 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     if (id === specifyKeyList[i].id) {
                         // 같은 id가 아니라 기존 id보다 더 큰 값들을 출력해야되기 때문
                         largerId = i + 1;
+                        console.log("작동");
                         break;
                     }
                 }
 
-                let strKeyListStartIndex: number = 0;
-                let strKeyListEndIndex: number = 0
                 const strKeyList = specifyKeyList?.map(specifyKey => specifyKey.id);
                 // 2개의 for문을 쓰는 이유는 동일한 id가 왔을때 맨앞에 있던 if문에 맞는 동일한 id가 무시되고 다음으로 넘어가기 때문
 
