@@ -497,6 +497,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     }
 
                     const keyLength = strKeyList.length - correctIndex + 1;
+                    console.log(`keyLength = ${keyLength}`);
                     console.log("여기요")
                     connection.write(Buffer.from(`*${keyLength}\r\n`));
                     for (let i = correctIndex; i <= keyLength; i++) {
