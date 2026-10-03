@@ -372,14 +372,21 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 if (typeof specifyKeyList === "undefined") {
                     break;
                 }
-                if (!startId.includes("-")) {
+                if (startId === "-") {
+                    startId = specifyKeyList[0].id;
+                }
+                else if (!startId.includes("-")) {
                     const startIdList = [];
                     for (let i = 0; i < specifyKeyList.length; i++) {
                         startIdList.push(Number(specifyKeyList[i].id.split("-")[1]));
                     }
                     startId = startId.concat("-").concat(String(Math.min(...startIdList)));
                 }
-                if (!endId.includes("-")) {
+
+                if (endId === "+") {
+                    endId = specifyKeyList[specifyKeyList.length - 1].id;
+                }
+                else if (!endId.includes("-")) {
                     const endIdList = [];
                     for (let i = 0; i < specifyKeyList.length; i++) {
                         endIdList.push(Number(specifyKeyList[i].id.split("-")[1]));
