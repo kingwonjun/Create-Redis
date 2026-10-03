@@ -440,6 +440,10 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 }
                 break;
             }
+            case "xread": {
+                const key = args[0].value;
+                console.log(`'hello`);
+            }
         }
     }
 }
