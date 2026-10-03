@@ -452,7 +452,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 console.log("여기")
                 const arrValue: string[]= [];
 
-                for (let i = [command, ...args].length / 2 + 1; i <= [command, ...args].length; i++) {
+                for (let i = [command, ...args].length / 2; i < [command, ...args].length; i++) {
                     console.log("i =", i, "args.length =", args.length);
                     const value = args[i].value;
                     if (typeof value === "string") {
