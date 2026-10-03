@@ -449,13 +449,18 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 // 이 코드 안풀릴 때 조심해야겠다.
                 if (typeof id1 === "undefined") {
                     id1 = key2
+
                 }
 
                 if (typeof key1 !== "string" || typeof id1 !== "string") {
                     break;
                 }
-                const specifyKeyList = streamList.get(key1);
-                const strKeyList = specifyKeyList?.map(specifyKey => specifyKey.id);
+                //이 두 변수는 후에 코드에 필요한다. const였는데 let으로 바꿈
+                let specifyKeyList;
+                let strKeyList;
+
+                specifyKeyList = streamList.get(key1);
+                strKeyList = specifyKeyList?.map(specifyKey => specifyKey.id);
 
                 if (typeof specifyKeyList === "undefined" ) {
                     break;
@@ -472,7 +477,6 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                         break;
                     }
                 }
-                console.log(specifyKeyList);
 
                 connection.write(Buffer.from(`*1\r\n`));
                 connection.write(Buffer.from(`*2\r\n`));
@@ -489,6 +493,43 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                         connection.write(Buffer.from(`${specifyKeyList[i].fields[j].streamKey}\r\n`));
                         connection.write(Buffer.from(`$${specifyKeyList[i].fields[j].streamValue.length}\r\n`));
                         connection.write(Buffer.from(`${specifyKeyList[i].fields[j].streamValue}\r\n`));
+                    }
+                }
+
+                if (typeof key2 === "string") {
+                    // 그냥 2개를 불러오는거라서 중복된 코드라도 단순하게 나열해봄
+                    specifyKeyList = streamList.get(key2);
+                    strKeyList = specifyKeyList?.map(specifyKey => specifyKey.id);
+
+                    if (typeof specifyKeyList === "undefined" ) {
+                        break;
+                    }
+                    if (typeof strKeyList === "undefined") {
+                        break;
+                    }
+                    for (let i = 0; i < strKeyList.length; i++) {
+                        if (id2 === strKeyList[i]) {
+                            // 같은 id가 아니라 기존 id보다 더 큰 값들을 출력해야되기 때문
+                            largerId = i + 1;
+                            break;
+                        }
+                    }
+                    connection.write(Buffer.from(`*1\r\n`));
+                    connection.write(Buffer.from(`*2\r\n`));
+                    connection.write(Buffer.from(`$${key2.length}\r\n`));
+                    connection.write(Buffer.from(`${key2}\r\n`));
+                    connection.write(Buffer.from(`*1\r\n`));
+                    for (let i = largerId; i < specifyKeyList.length; i++) {
+                        connection.write(Buffer.from(`*2\r\n`));
+                        connection.write(Buffer.from(`$${strKeyList[i].length}\r\n`));
+                        connection.write(Buffer.from(`${strKeyList[i]}\r\n`));
+                        connection.write(Buffer.from(`*${specifyKeyList[i].fields.length * 2}\r\n`));
+                        for (let j = 0; j < specifyKeyList[i].fields.length; j++) {
+                            connection.write(Buffer.from(`$${specifyKeyList[i].fields[j].streamKey.length}\r\n`));
+                            connection.write(Buffer.from(`${specifyKeyList[i].fields[j].streamKey}\r\n`));
+                            connection.write(Buffer.from(`$${specifyKeyList[i].fields[j].streamValue.length}\r\n`));
+                            connection.write(Buffer.from(`${specifyKeyList[i].fields[j].streamValue}\r\n`));
+                        }
                     }
                 }
             }
