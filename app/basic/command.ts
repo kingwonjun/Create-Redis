@@ -465,6 +465,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 let startIdToCompare : string;
                 let endIdToCompare : string;
                 console.log(`실행`);
+                console.log(`arrKey.length = ${arrKey.length}`);
                 for (let i = 0; i < arrKey.length; i++) {
                     // specifyKeyList는 key값이 정해지고 설정해야한다.
                     const specifyKeyList = streamList.get(arrKey[i]);
@@ -501,7 +502,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     console.log("여기요")
                     console.log(`correctIndex = ${correctIndex}`);
                     connection.write(Buffer.from(`*${keyLength}\r\n`));
-                    for (let i = correctIndex; i <= keyLength; i++) {
+                    for (let i = correctIndex; i < keyLength; i++) {
                         connection.write(Buffer.from(`*2\r\n`));
                         connection.write(Buffer.from(`$${strKeyList[i].length}\r\n`));
                         connection.write(Buffer.from(`${strKeyList[i]}\r\n`));
