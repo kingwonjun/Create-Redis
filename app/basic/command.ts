@@ -416,7 +416,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     connection.write(Buffer.from(`$${strKeyList[i].length}\r\n`));
                     connection.write(Buffer.from(`${strKeyList[i]}\r\n`));
                     connection.write(Buffer.from(`*${specifyKeyList.length * 2}\r\n`));
-                    for (let j = 0; j < specifyKeyList.length; j++) {
+                    for (let j = i; j < specifyKeyList.length; j++) {
                         //specifyKeyList는 streamList의 키값 <리스트이름>을 줘서 value인
                         //StreamEntry의 배열을 반환한다.
                         //StreamEntry는 id: string과 fields: StreamKeyValue[]를 가지고있다.
