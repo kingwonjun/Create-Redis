@@ -285,7 +285,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
 
                 let finalValue: string | undefined;
                 if (streamIdChecker !== undefined && id === "*") {
-                    const nearId = streamIdChecker[0].id;
+                    const nearId = streamIdChecker[streamIdChecker.length - 1].id;
                     const autoValueStartIdToCompare = Number(nearId.slice(0, id.indexOf('-')));
                     const autoValueEndIdToCompare = nearId.slice(id.indexOf('-') + 1);
 
