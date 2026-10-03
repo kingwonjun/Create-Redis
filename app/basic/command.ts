@@ -444,18 +444,17 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
             case "xread": {
                 const arrKey: string[]= [];
                 for (let i = 0; i < [command, ...args].length / 2; i++) {
-                    const key = args[i].value;
-                    if (typeof key === "string") {
-                        arrKey.push(key);
-                    }
-                }
-                console.log("여기")
-                const arrValue: string[]= [];
-                for (let i = [command, ...args].length / 2 + 1; i < [command, ...args].length; i++) {
-                    console.log(`i = ${i}`);
                     const value = args[i].value;
                     if (typeof value === "string") {
-                        arrValue.push(value);
+                        arrKey.push(value);
+                    }
+                }
+                const arrValue: string[]= [];
+
+                for (let i = [command, ...args].length / 2 + 1; i <= [command, ...args].length; i++) {
+                    const key = args[i].value;
+                    if (typeof key === "string") {
+                        arrValue.push(key);
                     }
                 }
                 let startId: string;
