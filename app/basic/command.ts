@@ -500,6 +500,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     }
 
                     const keyLength = strKeyList.length - correctIndex + 1;
+                    console.log(`strKeyList.length = ${strKeyList.length}`);
                     console.log(`keyLength = ${keyLength}`);
                     console.log("여기요")
                     console.log(`correctIndex = ${correctIndex}`);
