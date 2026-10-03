@@ -444,10 +444,9 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 const key = args[1].value;
                 const id = args[2].value;
 
-                if (typeof key !== "string" || typeof Ii !== "string") {
+                if (typeof key !== "string" || typeof id !== "string") {
                     break;
                 }
-                console.log("test")
                 const specifyKeyList = streamList.get(key);
                 const strKeyList = specifyKeyList?.map(specifyKey => specifyKey.id);
 
