@@ -506,6 +506,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     console.log(`correctIndex = ${correctIndex}`);
                     console.log(`strKeyList[0] = ${strKeyList[0]}`);
                     connection.write(Buffer.from(`*${keyLength}\r\n`));
+                    console.log(`key length가 작동을 안해`);
                     for (let i = correctIndex; i < keyLength; i++) {
                         connection.write(Buffer.from(`*2\r\n`));
                         connection.write(Buffer.from(`$${strKeyList[i].length}\r\n`));
