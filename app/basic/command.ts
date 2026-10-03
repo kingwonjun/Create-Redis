@@ -455,7 +455,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     break;
                 }
                 const specifyKeyList = streamList.get(key1);
-                const strKeyList = specifyKeyList?.map(specifyKey => specifyKey.id1);
+                const strKeyList = specifyKeyList?.map(specifyKey => specifyKey.id);
 
                 if (typeof specifyKeyList === "undefined" ) {
                     break;
