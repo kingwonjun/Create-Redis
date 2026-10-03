@@ -472,6 +472,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     const specifyKeyList = streamList.get(arrKey[i]);
                     const strKeyList = specifyKeyList?.map(specifyKey => specifyKey.id);
                     if (specifyKeyList === undefined || strKeyList === undefined) {
+                        console.log("여기서 걸리나요");
                         break;
                     }
                     startId = arrKey[i].split("-")[0];
