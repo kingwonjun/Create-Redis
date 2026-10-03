@@ -457,13 +457,13 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     if (typeof value === "string") {
                         arrValue.push(value);
                     }
-                    console.log(`실행`);
+
                 }
                 let startId: string;
                 let endId : string;
                 let startIdToCompare : string;
                 let endIdToCompare : string;
-
+                console.log(`실행`);
                 for (let i = 0; i < arrKey.length; i++) {
                     // specifyKeyList는 key값이 정해지고 설정해야한다.
                     const specifyKeyList = streamList.get(arrValue[i]);
