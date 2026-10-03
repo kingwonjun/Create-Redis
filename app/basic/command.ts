@@ -441,14 +441,21 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 break;
             }
             case "xread": {
-                const key = args[1].value;
-                const id = args[2].value;
+                let key1 = args[1].value;
+                let key2 = args[2].value;
+                let id1 = args[3].value
+                let id2 = args[4].value
 
-                if (typeof key !== "string" || typeof id !== "string") {
+                // 이 코드 안풀릴 때 조심해야겠다.
+                if (typeof id1 === "undefined") {
+                    id1 = key2
+                }
+
+                if (typeof key1 !== "string" || typeof id1 !== "string") {
                     break;
                 }
-                const specifyKeyList = streamList.get(key);
-                const strKeyList = specifyKeyList?.map(specifyKey => specifyKey.id);
+                const specifyKeyList = streamList.get(key1);
+                const strKeyList = specifyKeyList?.map(specifyKey => specifyKey.id1);
 
                 if (typeof specifyKeyList === "undefined" ) {
                     break;
@@ -459,19 +466,18 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
 
                 let largerId: number = 0;
                 for (let i = 0; i < strKeyList.length; i++) {
-                    if (id === strKeyList[i]) {
+                    if (id1 === strKeyList[i]) {
                         // 같은 id가 아니라 기존 id보다 더 큰 값들을 출력해야되기 때문
                         largerId = i + 1;
                         break;
                     }
                 }
-
-                // 2개의 for문을 쓰는 이유는 동일한 id가 왔을때 맨앞에 있던 if문에 맞는 동일한 id가 무시되고 다음으로 넘어가기 때문
                 console.log(specifyKeyList);
+
                 connection.write(Buffer.from(`*1\r\n`));
                 connection.write(Buffer.from(`*2\r\n`));
-                connection.write(Buffer.from(`$${key.length}\r\n`));
-                connection.write(Buffer.from(`${key}\r\n`));
+                connection.write(Buffer.from(`$${key1.length}\r\n`));
+                connection.write(Buffer.from(`${key1}\r\n`));
                 connection.write(Buffer.from(`*1\r\n`));
                 for (let i = largerId; i < specifyKeyList.length; i++) {
                     connection.write(Buffer.from(`*2\r\n`));
