@@ -315,8 +315,8 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                         id = String(startId).concat("-").concat("0");
                     }
                     if (streamIdChecker !== undefined) {
-                        const startIdToCompare = Number(streamIdChecker[0].id.slice(0, id.indexOf('-')));
-                        const endIdToCompare = Number(streamIdChecker[0].id.slice(id.indexOf('-') + 1));
+                        const startIdToCompare = Number(streamIdChecker[streamIdChecker.length - 1].id.slice(0, id.indexOf('-')));
+                        const endIdToCompare = Number(streamIdChecker[streamIdChecker.length - 1].id.slice(id.indexOf('-') + 1));
 
                         if (endId !== "*" && (startId < startIdToCompare || Number(endId) <= endIdToCompare)) {
                             connection.write('-ERR The ID specified in XADD is equal or smaller than the target stream top item\r\n');
