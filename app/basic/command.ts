@@ -511,6 +511,8 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     specifyKeyList = streamList.get(key2);
                     strKeyList = specifyKeyList?.map(specifyKey => specifyKey.id);
 
+                    console.log(`strKeyList = ${JSON.stringify(strKeyList)}`);
+
                     if (typeof specifyKeyList === "undefined" ) {
                         break;
                     }
