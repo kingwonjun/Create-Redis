@@ -432,7 +432,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
 
                         //const specifyKeyList = streamList.get(key);
                         //const strKeyList = specifyKeyList?.map(specifyKey => specifyKey.id);
-                        for (let k  = j; k < specifyKeyList[j].fields.length; k++) {
+                        for (let k  = 0; k < specifyKeyList[j].fields.length; k++) {
                             connection.write(Buffer.from(`$${specifyKeyList[j].fields[k].streamKey.length}\r\n`));
                             connection.write(Buffer.from(`${specifyKeyList[j].fields[k].streamKey}\r\n`));
                             connection.write(Buffer.from(`$${specifyKeyList[j].fields[k].streamValue.length}\r\n`));
