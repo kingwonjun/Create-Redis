@@ -443,7 +443,8 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
             }
             case "xread": {
                 const arrKey: string[]= [];
-                for (let i = 0; i < [command, ...args].length / 2; i++) {
+                for (let i = 1; i < [command, ...args].length / 2; i++) {
+                    console.log("i =", i, "args.length =", args.length);
                     const key = args[i].value;
                     if (typeof key === "string") {
                         arrKey.push(key);
