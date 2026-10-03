@@ -518,11 +518,11 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                         connection.write(Buffer.from(`${strKeyList[j]}\r\n`));
                         connection.write(Buffer.from(`*${specifyKeyList[j].fields.length * 2}\r\n`));
                         console.log(`specifyKeyList[i].fields.length = ${specifyKeyList[i].fields.length}`);
-                        for (let k = 0; k < specifyKeyList[i].fields.length; k++) {
-                            connection.write(Buffer.from(`$${specifyKeyList[i].fields[k].streamKey.length}\r\n`));
-                            connection.write(Buffer.from(`${specifyKeyList[i].fields[k].streamKey}\r\n`));
-                            connection.write(Buffer.from(`$${specifyKeyList[i].fields[k].streamValue.length}\r\n`));
-                            connection.write(Buffer.from(`${specifyKeyList[i].fields[k].streamValue}\r\n`));
+                        for (let k = 0; k < specifyKeyList[j].fields.length; k++) {
+                            connection.write(Buffer.from(`$${specifyKeyList[j].fields[k].streamKey.length}\r\n`));
+                            connection.write(Buffer.from(`${specifyKeyList[j].fields[k].streamKey}\r\n`));
+                            connection.write(Buffer.from(`$${specifyKeyList[j].fields[k].streamValue.length}\r\n`));
+                            connection.write(Buffer.from(`${specifyKeyList[j].fields[k].streamValue}\r\n`));
                         }
                     }
                 }
