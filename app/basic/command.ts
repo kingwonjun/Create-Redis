@@ -502,11 +502,9 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     strKeyList = specifyKeyList?.map(specifyKey => specifyKey.id);
 
                     if (typeof specifyKeyList === "undefined" ) {
-                        console.log("dd");
                         break;
                     }
                     if (typeof strKeyList === "undefined") {
-                        console.log("dd");
                         break;
                     }
                     for (let i = 0; i < strKeyList.length; i++) {
@@ -534,6 +532,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                         }
                     }
                 }
+                break;
             }
         }
     }
