@@ -460,13 +460,12 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 let endId : string;
                 let startIdToCompare : string;
                 let endIdToCompare : string;
-
+                console.log("여기");
                 for (let i = 0; i < arrKey.length; i++) {
                     // specifyKeyList는 key값이 정해지고 설정해야한다.
                     const specifyKeyList = streamList.get(arrValue[i]);
                     const strKeyList = specifyKeyList?.map(specifyKey => specifyKey.id);
                     if (specifyKeyList === undefined || strKeyList === undefined) {
-                        console.log("break")
                         break;
                     }
                     startId = arrKey[i].split("-")[0];
