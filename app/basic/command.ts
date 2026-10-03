@@ -453,11 +453,11 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 const arrValue: string[]= [];
 
                 for (let i = [command, ...args].length / 2 + 1; i <= [command, ...args].length; i++) {
+                    console.log("i =", i, "args.length =", args.length);
                     const value = args[i].value;
                     if (typeof value === "string") {
                         arrValue.push(value);
                     }
-
                 }
                 let startId: string;
                 let endId : string;
