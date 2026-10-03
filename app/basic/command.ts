@@ -125,7 +125,6 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 if (list === undefined) {
                     break;
                 }
-                console.log("c");
                 if (list.length > 0) {
                     const otherConnection = BlockedClientArray.shift();
                     if (otherConnection !== undefined) {
@@ -189,7 +188,6 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     word += "\r\n";
                 }
                 connection.write(Buffer.from(word));
-                console.log("확인");
                 break;
             }
             case "llen": {
@@ -310,8 +308,6 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     const startId = Number(id.slice(0, id.indexOf('-')));
                     const endId = id.slice(id.indexOf('-') + 1);
                     // 자동 시퀸스 번호 코드
-                    console.log(`startId = ${startId}`);
-                    console.log(`endId = ${endId}`);
                     if (streamIdChecker === undefined && startId === 0 && endId === "*") {
                         id = String(startId).concat("-").concat("1");
                     } else if (streamIdChecker === undefined && endId === "*") {
@@ -334,7 +330,6 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     }
                 }
 
-                console.log(`[command, ...args].length = ${[command, ...args].length}`);
                 for (let i = 2; i < [command, ...args].length - 1; i += 2) {
                     // i가 2부터 시작하니까 인덱스 0으로 맞추기위해 -2함
                     const keyValue1 = args[i].value;
@@ -342,8 +337,6 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                     if (typeof keyValue1 !== "string" || typeof keyValue2 !== "string") {
                         break;
                     }
-                    //console.log(`keyValue1 = ${keyValue1}`);
-                    //console.log(`keyValue2 = ${keyValue2}`);
                     streamArray.push({streamKey: keyValue1, streamValue: keyValue2});
                 }
 
@@ -372,7 +365,6 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 }
 
                 const specifyKeyList = streamList.get(key);
-                console.log(JSON.stringify(specifyKeyList, null, 2));
                 if (typeof specifyKeyList === "undefined") {
                     break;
                 }
@@ -406,8 +398,6 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                         break;
                     }
                 }
-                console.log(`strKeyLIstStratIndex = ${strKeyListStartIndex}`);
-                console.log(`strKeyListEndIndex = ${strKeyListEndIndex}`);
                 const keyLength = strKeyListEndIndex - strKeyListStartIndex + 1;
                 connection.write(Buffer.from(`*${keyLength}\r\n`));
                 for (let i = strKeyListStartIndex; i <= strKeyListEndIndex; i++) {
