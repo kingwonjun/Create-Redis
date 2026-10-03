@@ -469,7 +469,7 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 for (let i = 0; i < arrKey.length; i++) {
                     // specifyKeyList는 key값이 정해지고 설정해야한다.
                     console.log(`i = 처음 ${i}`);
-                    const specifyKeyList = streamList.get(arrKey[i]);
+                    const specifyKeyList = streamList.get(arrValue[i]);
                     const strKeyList = specifyKeyList?.map(specifyKey => specifyKey.id);
                     if (specifyKeyList === undefined || strKeyList === undefined) {
                         console.log("여기서 걸리나요");
