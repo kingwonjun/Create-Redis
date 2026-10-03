@@ -449,20 +449,24 @@ export const handleCommand = (result: ParseResult, connection: net.Socket, store
                 }
 
                 const specifyKeyList = streamList.get(key);
-                if (typeof specifyKeyList === "undefined") {
+                const strKeyList = specifyKeyList?.map(specifyKey => specifyKey.id);
+
+                if (typeof specifyKeyList === "undefined" ) {
                     break;
                 }
+                if (typeof strKeyList === "undefined") {
+                    break;
+                }
+
                 let largerId: number = 0;
-                for (let i = 0; i < specifyKeyList.length; i++) {
-                    if (id === specifyKeyList[i].id) {
+                for (let i = 0; i < strKeyList.length; i++) {
+                    if (id === strKeyList[i]) {
                         // 같은 id가 아니라 기존 id보다 더 큰 값들을 출력해야되기 때문
                         largerId = i + 1;
-                        console.log("작동");
                         break;
                     }
                 }
 
-                const strKeyList = specifyKeyList?.map(specifyKey => specifyKey.id);
                 // 2개의 for문을 쓰는 이유는 동일한 id가 왔을때 맨앞에 있던 if문에 맞는 동일한 id가 무시되고 다음으로 넘어가기 때문
 
                 for (let i = largerId; i < specifyKeyList.length; i++) {
